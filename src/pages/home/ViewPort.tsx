@@ -2,10 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import { LocationMapElement } from "../../components/LocationMapElement";
 import Draggable, { type DraggableData } from "react-draggable";
 import { useAtomValue } from "jotai";
-import { locationsAtom, scaleAtom, shelvesAtom } from "../../store";
+import { inventoriesAtom, locationsAtom, scaleAtom, shelvesAtom } from "../../store";
 import { getLocationElementId } from "../../types/location";
 import { type Rectangle } from "../../types/rectangle";
 import { intersect } from "../../types/map";
+import type { InventoryMapModel } from "../../types/inventory";
 
 interface Props {
     mapW: number;
@@ -21,6 +22,7 @@ export function ViewPort(props: Props) {
     const scale = useAtomValue(scaleAtom);
     const locations = useAtomValue(locationsAtom);
     const shelves = useAtomValue(shelvesAtom);
+    const inventories = useAtomValue(inventoriesAtom);
 
     const canvasW = Math.round(props.mapW * scale) + borderWidth * 2;
     const canvasH = Math.round(props.mapH * scale) + borderWidth * 2;
@@ -70,10 +72,17 @@ export function ViewPort(props: Props) {
 
     const locationElements = [];
     for (const location of locations) {
-        if (intersect(location, borderWidth, borderWidth, scale, viewBounds)) {
-            const shelf = shelves.find(x => x.locationCode == location.code) ?? null;
-            locationElements.push(<LocationMapElement key={getLocationElementId(location)} location={location} shelf={shelf} inventories={[]} arriveTasks={[]} leaveTask={null} />);
+        if (!intersect(location, borderWidth, borderWidth, scale, viewBounds)) {
+            continue;
         }
+
+        const shelf = shelves.find(x => x.locationCode == location.code) ?? null;
+        let shelfInventories: InventoryMapModel[] = [];
+        if (shelf) {
+            shelfInventories = inventories.filter(x => x.shelfCode == shelf.code);
+        }
+
+        locationElements.push(<LocationMapElement key={getLocationElementId(location)} location={location} shelf={shelf} inventories={shelfInventories} arriveTasks={[]} leaveTask={null} onlyShelf={scale <= 0.42} />);
     }
 
     return (
