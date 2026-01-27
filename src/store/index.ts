@@ -5,7 +5,7 @@ import type { LocationMapElementModel } from "../types/location";
 import type { ShelfMapElementModel } from "../types/shelf";
 import type { InventoryMapModel } from "../types/inventory";
 import { transportTaskStatuses } from "../types/enums";
-import type { MapElementLayerCtrl, RectangleMapElement } from "../types/map";
+import type { MapElementLayerCtrl } from "../types/map";
 
 export const globalAlertAtom = atom<string[]>([]);
 
@@ -13,7 +13,7 @@ export const layerCtrlAtom = atom<MapElementLayerCtrl>({
     area: true,
     location: true,
     shelf: true,
-    stock: true,
+    inventory: true,
     transportTask: false
 });
 
@@ -28,8 +28,6 @@ export const shelvesAtom = atom<ShelfMapElementModel[]>([]);
 export const inventoriesAtom = atom<InventoryMapModel[]>([]);
 
 export const transportTasksAtom = atom<TransportTaskMapModel[]>([]);
-
-export const hiddenRectanglesAtom = atom<RectangleMapElement[]>([]);
 
 export const transportTaskStatisticalDataAtom = atom<TransportTaskStatisticalData>(get => {
     const tasks = get(transportTasksAtom);

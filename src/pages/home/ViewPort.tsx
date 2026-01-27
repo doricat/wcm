@@ -61,6 +61,9 @@ export function ViewPort(props: Props) {
         if (evt.target) {
             const locationCode = (evt.target as HTMLDivElement).getAttribute('data-location-code');
             if (locationCode) {
+                if (isDoubleClick) {
+                    // TODO
+                }
                 console.log(locationCode);
             }
         }
