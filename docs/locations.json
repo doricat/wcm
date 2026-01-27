@@ -1,0 +1,115 @@
+{
+    "status": "success",
+    "value": [
+        {
+            "code": "L01",
+            "shelfModels": [],
+            "enabled": true,
+            "areaCode": "A1",
+            "x": 0,
+            "y": 0,
+            "w": 100,
+            "h": 100
+        },
+        {
+            "code": "L02",
+            "shelfModels": [],
+            "enabled": true,
+            "areaCode": "A1",
+            "x": 110,
+            "y": 0,
+            "w": 100,
+            "h": 100
+        },
+        {
+            "code": "L03",
+            "shelfModels": [],
+            "enabled": true,
+            "areaCode": "A1",
+            "x": 220,
+            "y": 0,
+            "w": 100,
+            "h": 100
+        },
+        {
+            "code": "L04",
+            "shelfModels": [],
+            "enabled": true,
+            "areaCode": "A1",
+            "x": 330,
+            "y": 0,
+            "w": 100,
+            "h": 100
+        },
+        {
+            "code": "L05",
+            "shelfModels": [],
+            "enabled": true,
+            "areaCode": "A1",
+            "x": 550,
+            "y": 0,
+            "w": 100,
+            "h": 100
+        },
+        {
+            "code": "L06",
+            "shelfModels": [],
+            "enabled": true,
+            "areaCode": "A1",
+            "x": 660,
+            "y": 0,
+            "w": 100,
+            "h": 100
+        },
+        {
+            "code": "L07",
+            "shelfModels": [],
+            "enabled": true,
+            "areaCode": "A1",
+            "x": 770,
+            "y": 0,
+            "w": 100,
+            "h": 100
+        },
+        {
+            "code": "L08",
+            "shelfModels": [],
+            "enabled": true,
+            "areaCode": "A1",
+            "x": 880,
+            "y": 0,
+            "w": 100,
+            "h": 100
+        },
+        {
+            "code": "L09",
+            "shelfModels": [],
+            "enabled": true,
+            "areaCode": "A1",
+            "x": 990,
+            "y": 0,
+            "w": 100,
+            "h": 100
+        },
+        {
+            "code": "L10",
+            "shelfModels": [],
+            "enabled": true,
+            "areaCode": "A1",
+            "x": 1100,
+            "y": 0,
+            "w": 100,
+            "h": 100
+        },
+        {
+            "code": "L11",
+            "shelfModels": [],
+            "enabled": true,
+            "areaCode": "A1",
+            "x": 1210,
+            "y": 0,
+            "w": 100,
+            "h": 100
+        }
+    ]
+}
