@@ -36,10 +36,6 @@ export interface OpenConfirmDialog {
     (msg: React.ReactNode, options?: ConfirmOptions): Promise<boolean>;
 }
 
-export interface OpenLocationDialog {
-    (code: string, options?: ConfirmOptions): Promise<void>;
-}
-
 export interface DialogHook {
     confirm: OpenConfirmDialog;
     open: OpenDialog;

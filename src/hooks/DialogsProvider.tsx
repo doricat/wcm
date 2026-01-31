@@ -2,6 +2,7 @@ import React from "react";
 import type { DialogComponent, OpenDialog, OpenDialogOptions } from "../types/dialog";
 import { DialogsContext } from "../types/DialogContext";
 import { useEventCallback } from "@mui/material";
+import { isEqual } from "lodash-es";
 
 interface DialogStackEntry<P, R> {
     key: string;
@@ -32,6 +33,11 @@ export default function DialogsProvider(props: DialogProviderProps) {
         payload: P,
         options: OpenDialogOptions<R> = {}
     ) {
+        const entry = stack.find(x => x.Component === Component && isEqual(x.payload, payload));
+        if (entry) {
+            return entry.promise;
+        }
+
         const { onClose = async () => { } } = options;
         let resolve: ((result: R) => void) | undefined;
         const promise = new Promise<R>((resolveImpl) => {

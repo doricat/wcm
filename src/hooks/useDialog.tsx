@@ -12,7 +12,6 @@ export function useDialog(): DialogHook {
 
     const { open, close } = dialogsContext;
     const confirm = useEventCallback<OpenConfirmDialog>((msg, { onClose, ...options } = {}) => open(ConfirmDialog, { ...options, msg }, { onClose }));
-    // const openLocation = useEventCallback<OpenConfirmDialog>((msg, { onClose, ...options } = {}) => open(ConfirmDialog, { ...options, msg }, { onClose }));
 
     return React.useMemo(() => {
         return {
