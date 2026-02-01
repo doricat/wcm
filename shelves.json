@@ -12,6 +12,12 @@
             "model": "1212",
             "enabled": true,
             "locationCode": "L02"
+        },
+        {
+            "code": "S03",
+            "model": "1313",
+            "enabled": true,
+            "locationCode": null
         }
     ]
 }
