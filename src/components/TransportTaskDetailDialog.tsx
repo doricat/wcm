@@ -54,7 +54,7 @@ export function TransportTaskDetailDialog(props: Props) {
                             <Typography variant="body1" align="left"><b>状态</b> {task.status}</Typography>
                             <Typography variant="body1" align="left"><b>优先级</b> {task.priority}</Typography>
                             <Typography variant="body1" align="left"><b>AGV编号</b> {task.agvCode}</Typography>
-                            <Typography variant="body1" align="left"><b>货架</b> {task.shelfCode}</Typography>
+                            <Typography variant="body1" align="left"><b>货架编码</b> {task.shelfCode}</Typography>
                             <Typography variant="body1" align="left"><b>源位置</b> {getSourceLocation(task)}</Typography>
                             <Typography variant="body1" align="left"><b>目的位置</b> {getTargetLocation(task)}</Typography>
                             <Typography variant="body1" align="left"><b>外部任务编号</b> {task.externalTaskCode}</Typography>
