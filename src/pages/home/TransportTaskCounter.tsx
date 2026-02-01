@@ -4,6 +4,7 @@ import { exceptionalShelfQtyAtom, transportTaskStatisticalDataAtom } from "../..
 import { useDialog } from "../../hooks/useDialog";
 import { transportTaskStatuses } from "../../types/enums";
 import { TransportTasksDialog } from "../../components/TransportTasksDialog";
+import { NoLocationShelvesDialog } from "../../components/NoLocationShelvesDialog";
 
 export function TransportTaskCounter() {
     const statisticalData = useAtomValue(transportTaskStatisticalDataAtom);
@@ -12,6 +13,10 @@ export function TransportTaskCounter() {
 
     const viewTasks = async (status: number, title: string) => {
         await dialog.open(TransportTasksDialog, { status: status, title: title });
+    };
+
+    const viewShelves = async () => {
+        await dialog.open(NoLocationShelvesDialog, {});
     };
 
     return (
@@ -32,7 +37,7 @@ export function TransportTaskCounter() {
                     </div>
                     <div>
                         <Typography variant="body2">异常货架</Typography>
-                        <Typography variant="h6" color="warning" style={{ cursor: 'pointer' }}>{qty}</Typography>
+                        <Typography variant="h6" color="warning" style={{ cursor: 'pointer' }} onClick={viewShelves}>{qty}</Typography>
                     </div>
                 </Stack>
             </Paper>
