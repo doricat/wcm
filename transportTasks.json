@@ -1,4 +1,18 @@
 {
     "status": "success",
-    "value": []
+    "value": [
+        {
+            "id": 1,
+            "code": "BY2025020100001",
+            "businessTypeCode": "F01",
+            "businessTypeName": "货架调度",
+            "startAreaCode": "A1",
+            "endAreaCode": "A1",
+            "startLocationCode": "L01",
+            "endLocationCode": "L04",
+            "shelfCode": "S01",
+            "status": 2,
+            "createdAt": "2026-02-01T15:43:50.416"
+        }
+    ]
 }
