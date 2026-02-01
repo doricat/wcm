@@ -4,3 +4,7 @@ export interface ShelfMapElementModel {
     enabled: boolean;
     locationCode: string | null;
 }
+
+export interface NoLocationShelfMapElementModel extends ShelfMapElementModel {
+    hasInventory: boolean;
+}
