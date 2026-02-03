@@ -33,13 +33,14 @@ export const transportTaskStatisticalDataAtom = atom<TransportTaskStatisticalDat
     const tasks = get(transportTasksAtom);
     const pending = tasks.filter(x => x.status === transportTaskStatuses.pending).length;
     const exceptional = tasks.filter(x => x.status === transportTaskStatuses.exceptional).length;
-    const executing = tasks.filter(x => x.status === transportTaskStatuses.executing).length;
+    const executing = tasks.filter(x => x.status === transportTaskStatuses.executing || x.status === transportTaskStatuses.renewable).length;
     return { pending, exceptional, executing };
 });
 
 export const exceptionalShelfQtyAtom = atom<number>(get => {
     const shelves = get(shelvesAtom);
-    return shelves.filter(x => x.locationCode === null).length;
+    const tasks = get(transportTasksAtom);
+    return shelves.filter(x => x.locationCode === null && !tasks.some(y => y.shelfCode === x.code)).length;
 });
 
 export const opendDialogAtom = atom<string[]>([]);
