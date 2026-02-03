@@ -28,7 +28,7 @@
         {
             "code": "L03",
             "shelfModels": ["1212", "1313"],
-            "enabled": true,
+            "enabled": false,
             "areaCode": "A1",
             "externalCode": "L03",
             "level": 1,
