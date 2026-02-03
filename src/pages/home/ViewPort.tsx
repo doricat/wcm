@@ -83,14 +83,19 @@ export function ViewPort(props: Props) {
             continue;
         }
 
-        const shelf = shelves.find(x => x.locationCode == location.code) ?? null;
+        const leaveTask = tasks.find(x => x.startLocationCode === location.code);
+        const arriveTasks = tasks.filter(x => x.endLocationCode === location.code);
+
+        let shelf = shelves.find(x => x.locationCode == location.code);
+        if (!shelf && arriveTasks.length > 0) {
+            shelf = shelves.find(x => x.code == arriveTasks[0].shelfCode && x.locationCode == null);
+        }
+
         let shelfInventories: InventoryMapModel[] = [];
         if (shelf) {
             shelfInventories = inventories.filter(x => x.shelfCode == shelf.code);
         }
 
-        const leaveTask = tasks.find(x => x.startLocationCode === location.code);
-        const arriveTasks = tasks.filter(x => x.endLocationCode === location.code);
         locationElements.push(<LocationMapElement key={getLocationElementId(location)} location={location} shelf={shelf} inventories={shelfInventories} arriveTasks={arriveTasks} leaveTask={leaveTask} onlyShelf={scale <= 0.42} />);
     }
 
