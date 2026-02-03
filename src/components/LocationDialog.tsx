@@ -6,7 +6,7 @@ import { useAtomValue } from "jotai";
 import { locationsAtom, shelvesAtom, inventoriesAtom, transportTasksAtom } from "../store";
 import { getShelfModels } from "../types/location";
 import { getYesOrNo } from "../types/enums";
-import type { InventoryMapModel } from "../types/inventory";
+import { groupByMaterial, type InventoryMapModel } from "../types/inventory";
 import { Fragment } from "react/jsx-runtime";
 import { useDialog } from "../hooks/useDialog";
 import { TransportTaskCreationDialog } from "./TransportTaskCreationDialog";
@@ -268,17 +268,7 @@ function LocationInventoryPanel({ inventory }: { inventory: InventoryMapModel })
 }
 
 function LocationInventoriesPanel({ inventories }: { inventories: InventoryMapModel[] }) {
-    const groups = inventories.reduce((x, y) => {
-        const arr = x.get(y.materialCode);
-        if (arr) {
-            arr.push(y);
-        } else {
-            x.set(y.materialCode, [y]);
-        }
-
-        return x;
-    }, new Map<string, InventoryMapModel[]>());
-
+    const groups = groupByMaterial(inventories);
     const elements = [];
     for (const item of groups) {
         elements.push(

@@ -5,7 +5,7 @@
             "code": "S01",
             "model": "1212",
             "enabled": true,
-            "locationCode": "L01"
+            "locationCode": null
         },
         {
             "code": "S02",

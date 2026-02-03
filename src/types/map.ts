@@ -8,12 +8,19 @@ export interface MapElementLayerCtrl {
     transportTask: boolean;
 }
 
-export function getLocationStyle(element: Rectangle) {
-    return {
+export function getLocationStyle(element: Rectangle, b: boolean) {
+    const props = {
         translate: `${element.x}px ${element.y}px`,
         width: `${element.w}px`,
         height: `${element.h}px`
-    };
+    } as React.CSSProperties;
+
+    if (b) {
+        props['borderStyle'] = 'dashed';
+        props['borderColor'] = '#9c27b0';
+    }
+
+    return props;
 }
 
 export function intersect(element: Rectangle, offsetX: number, offsetY: number, scale: number, bounds: Rectangle) {
