@@ -19,7 +19,7 @@ export interface DialogProviderProps {
     unmountAfter?: number;
 }
 
-export default function DialogsProvider(props: DialogProviderProps) {
+export function DialogsProvider(props: DialogProviderProps) {
     const { children, unmountAfter = 1000 } = props;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const [stack, setStack] = React.useState<DialogStackEntry<any, any>[]>([]);

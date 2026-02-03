@@ -9,6 +9,7 @@ import { intersect } from "../../types/map";
 import type { InventoryMapModel } from "../../types/inventory";
 import { LocationDialog } from "../../components/LocationDialog";
 import { useDialog } from "../../hooks/useDialog";
+import { TaskArrowManager } from "../../components/TaskArrowManager";
 
 interface Props {
     mapW: number;
@@ -19,6 +20,7 @@ const borderWidth = 150;
 
 export function ViewPort(props: Props) {
     const [viewBounds, setViewBounds] = useState<Rectangle>({ x: 0, y: 0, w: window.innerWidth, h: window.innerHeight });
+    const [locationCode, setLocationCode] = useState<string | null>(null);
     const dragNodeRef = useRef<HTMLDivElement | null>(null);
     const dialog = useDialog();
 
@@ -68,7 +70,7 @@ export function ViewPort(props: Props) {
                 if (isDoubleClick) {
                     await dialog.open(LocationDialog, { code: locationCode });
                 } else {
-                    // TODO Show Task Arrow
+                    setLocationCode(locationCode);
                 }
             }
         }
@@ -93,8 +95,11 @@ export function ViewPort(props: Props) {
         <div style={{ position: 'relative', width: '100vw', height: '100vh', overflow: 'hidden', zIndex: 0 }} >
             <Draggable nodeRef={dragNodeRef} bounds={draggableBounds} onStop={handleDragStop}>
                 <div style={{ position: 'relative', width: `${canvasW}px`, height: `${canvasH}px` }} ref={dragNodeRef}>
-                    <div style={{ width: `${props.mapW}px`, height: `${props.mapH}px`, translate: `${borderWidth}px ${borderWidth}px`, transformOrigin: 'left top', scale: scale }} onDoubleClick={x => handleClick(x, true)} onClick={x => handleClick(x, false)}>
+                    <div style={{ width: `${props.mapW}px`, height: `${props.mapH}px`, translate: `${borderWidth}px ${borderWidth}px`, transformOrigin: 'left top', scale: scale, position: 'absolute' }} onDoubleClick={x => handleClick(x, true)} onClick={x => handleClick(x, false)}>
                         {locationElements}
+                    </div>
+                    <div style={{ width: `${props.mapW}px`, height: `${props.mapH}px`, translate: `${borderWidth}px ${borderWidth}px`, transformOrigin: 'left top', scale: scale, position: 'absolute', pointerEvents: 'none' }}>
+                        <TaskArrowManager locationCode={locationCode} />
                     </div>
                 </div>
             </Draggable>
