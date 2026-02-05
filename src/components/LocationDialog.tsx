@@ -5,7 +5,7 @@ import { DraggableDialogPaperComponent } from "./DraggableDialogPaperComponent";
 import { useAtomValue } from "jotai";
 import { locationsAtom, shelvesAtom, inventoriesAtom, transportTasksAtom } from "../store";
 import { getShelfModels } from "../types/location";
-import { getYesOrNo } from "../types/enums";
+import { getYesOrNo, transportTaskStatuses } from "../types/enums";
 import { groupByMaterial, type InventoryMapModel } from "../types/inventory";
 import { Fragment } from "react/jsx-runtime";
 import { useDialog } from "../hooks/useDialog";
@@ -31,7 +31,7 @@ export function LocationDialog(props: Props) {
     const location = locations.find(x => x.code == payload.code);
     const shelf = shelves.find(x => x.locationCode === payload.code);
     const shelfInventories = shelf ? inventories.filter(x => x.shelfCode === shelf.code) : [];
-    const locationTasks = tasks.filter(x => x.startLocationCode === payload.code || x.endLocationCode === payload.code);
+    const locationTasks = tasks.filter(x => (x.startLocationCode === payload.code || x.endLocationCode === payload.code) && x.status >= transportTaskStatuses.pending && x.status <= transportTaskStatuses.renewable);
 
     const transferShelf = async (shelfCode: string) => {
         await dialog.open(TransportTaskCreationDialog, { shelfCode: shelfCode });

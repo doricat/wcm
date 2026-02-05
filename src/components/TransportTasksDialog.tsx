@@ -4,12 +4,13 @@ import type { DialogProps, OpenDialogOptions } from "../types/dialog";
 import { DraggableDialogPaperComponent } from "./DraggableDialogPaperComponent";
 import { getLocations } from "../types/utils";
 import { transportTasksAtom } from "../store";
-import { useAtomValue } from "jotai";
+import { useAtom } from "jotai";
 import { transportTaskStatuses } from "../types/enums";
 import { useState } from "react";
-import type { TransportTaskMapModel } from "../types/transportTask";
+import { abortTask, type TransportTaskMapModel } from "../types/transportTask";
 import { useDialog } from "../hooks/useDialog";
 import { TransportTaskDetailDialog } from "./TransportTaskDetailDialog";
+import { toYYYYMMDDHHmmss } from "../utils/datetime";
 
 interface Payload extends OpenDialogOptions<void> {
     title: string;
@@ -22,7 +23,7 @@ export function TransportTasksDialog(props: Props) {
     const { open, payload, onClose } = props;
     const dialog = useDialog();
     const [task, setTask] = useState<TransportTaskMapModel | null>(null);
-    const allTasks = useAtomValue(transportTasksAtom);
+    const [allTasks, setAllTasks] = useAtom(transportTasksAtom);
     const tasks = payload.status === transportTaskStatuses.executing
         ? allTasks.filter(x => x.status === transportTaskStatuses.executing || x.status === transportTaskStatuses.renewable)
         : allTasks.filter(x => x.status === payload.status);
@@ -42,7 +43,8 @@ export function TransportTasksDialog(props: Props) {
 
         const b = await dialog.confirm(`确定中断任务 ${task.code}？`, { severity: 'warning' });
         if (b) {
-            // TODO
+            abortTask(task);
+            setAllTasks([...allTasks]);
         }
     };
 
@@ -82,7 +84,7 @@ export function TransportTasksDialog(props: Props) {
                                 <Typography variant="body1" align="left"><b>任务编码</b> {x.code}</Typography>
                                 <Typography variant="body1" align="left"><b>货架编码</b> {x.shelfCode}</Typography>
                                 <Typography variant="body1" align="left"><b>源/目的</b> {getLocations(x)}</Typography>
-                                <Typography variant="body1" align="left"><b>创建时间</b> {x.createdAt}</Typography>
+                                <Typography variant="body1" align="left"><b>创建时间</b> {toYYYYMMDDHHmmss(x.createdAt)}</Typography>
                             </ListItemButton>
                         ))
                     }
