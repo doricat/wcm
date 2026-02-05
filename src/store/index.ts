@@ -29,6 +29,8 @@ export const inventoriesAtom = atom<InventoryMapModel[]>([]);
 
 export const transportTasksAtom = atom<TransportTaskMapModel[]>([]);
 
+export const shelfModelsAtom = atom<string[]>(['1212', '1313', '1317']);
+
 export const transportTaskStatisticalDataAtom = atom<TransportTaskStatisticalData>(get => {
     const tasks = get(transportTasksAtom);
     const pending = tasks.filter(x => x.status === transportTaskStatuses.pending).length;
