@@ -1,22 +1,19 @@
 import { useAtomValue } from "jotai";
-import { locationsAtom, transportTasksAtom } from "../store";
+import { clickedLocationAtom, locationsAtom, transportTasksAtom } from "../store";
 import { AnimatedArrow } from "./AnimatedArrow";
 import type { LocationMapElementModel } from "../types/location";
 import { transportTaskStatuses } from "../types/enums";
 
-interface Props {
-    locationCode: string | null;
-}
-
-export function TaskArrowManager(props: Props) {
+export function TaskArrowManager() {
     const tasks = useAtomValue(transportTasksAtom);
     const locations = useAtomValue(locationsAtom);
+    const clickedLocation = useAtomValue(clickedLocationAtom);
 
-    if (!props.locationCode) {
+    if (!clickedLocation) {
         return null;
     }
 
-    const activeTasks = tasks.filter(x => (x.startLocationCode === props.locationCode || x.endLocationCode === props.locationCode) && x.status >= transportTaskStatuses.pending && x.status <= transportTaskStatuses.renewable);
+    const activeTasks = tasks.filter(x => (x.startLocationCode === clickedLocation || x.endLocationCode === clickedLocation) && x.status >= transportTaskStatuses.pending && x.status <= transportTaskStatuses.renewable);
     if (activeTasks.length === 0) {
         return null;
     }

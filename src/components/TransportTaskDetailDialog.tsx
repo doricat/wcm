@@ -4,7 +4,7 @@ import { DraggableDialogPaperComponent } from "./DraggableDialogPaperComponent";
 import { abortTask, canAbort, canContinue, canRepeat, canTriggerEnd, canTriggerStart, triggerTaskEnd, triggerTaskStart } from "../types/transportTask";
 import { getSourceLocation, getTargetLocation } from "../types/utils";
 import { useAtom } from "jotai";
-import { shelvesAtom, transportTasksAtom } from "../store";
+import { clickedLocationAtom, shelvesAtom, transportTasksAtom } from "../store";
 import { toYYYYMMDDHHmmss } from "../utils/datetime";
 import { dialogSlotProps } from "./props";
 import { useDialog } from "../hooks/useDialog";
@@ -21,6 +21,7 @@ export function TransportTaskDetailDialog(props: Props) {
     const dialog = useDialog();
     const [tasks, setTasks] = useAtom(transportTasksAtom);
     const [shelves, setShelves] = useAtom(shelvesAtom);
+    const [clickedLocation, setClickedLocation] = useAtom(clickedLocationAtom);
     const task = tasks.find(x => x.code === payload.code);
 
     const triggerStart = async () => {
@@ -56,6 +57,10 @@ export function TransportTaskDetailDialog(props: Props) {
                 shelf.locationCode = task.endLocationCode;
                 setShelves([...shelves]);
             }
+
+            if (clickedLocation && (clickedLocation === task.startLocationCode || clickedLocation === task.endLocationCode)) {
+                setClickedLocation(null);
+            }
         }
     };
 
@@ -68,6 +73,10 @@ export function TransportTaskDetailDialog(props: Props) {
         if (b) {
             abortTask(task);
             setTasks([...tasks]);
+
+            if (clickedLocation && (clickedLocation === task.startLocationCode || clickedLocation === task.endLocationCode)) {
+                setClickedLocation(null);
+            }
         }
     };
 

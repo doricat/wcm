@@ -46,3 +46,5 @@ export const exceptionalShelfQtyAtom = atom<number>(get => {
 export const selectedLocationsAtom = atom<string[]>([]);
 
 export const selectedElementAtom = atom<{ code: string; type: 'location' | 'shelf' } | null>(null);
+
+export const clickedLocationAtom = atom<string | null>(null);

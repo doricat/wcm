@@ -44,7 +44,7 @@ export function canContinue(task: TransportTaskMapModel) {
 }
 
 export function canRepeat(task: TransportTaskMapModel) {
-    return task.status == transportTaskStatuses.executing;
+    return task.status == transportTaskStatuses.executing && task.leavedAt == null;
 }
 
 export function canAbort(task: TransportTaskMapModel) {

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { LocationMapElement } from "../../components/LocationMapElement";
 import Draggable, { type DraggableData } from "react-draggable";
 import { useAtomValue, useSetAtom } from "jotai";
-import { inventoriesAtom, locationsAtom, scaleAtom, selectedElementAtom, selectedLocationsAtom, shelvesAtom, transportTasksAtom } from "../../store";
+import { clickedLocationAtom, inventoriesAtom, locationsAtom, scaleAtom, selectedElementAtom, selectedLocationsAtom, shelvesAtom, transportTasksAtom } from "../../store";
 import { getLocationElementId } from "../../types/location";
 import { type Rectangle } from "../../types/rectangle";
 import { intersect } from "../../types/map";
@@ -21,7 +21,6 @@ const borderWidth = 150;
 
 export function ViewPort(props: Props) {
     const [viewBounds, setViewBounds] = useState<Rectangle>({ x: 0, y: 0, w: window.innerWidth, h: window.innerHeight });
-    const [locationCode, setLocationCode] = useState<string | null>(null);
     const dragNodeRef = useRef<HTMLDivElement | null>(null);
     const dialog = useDialog();
 
@@ -32,6 +31,7 @@ export function ViewPort(props: Props) {
     const tasks = useAtomValue(transportTasksAtom);
     const selectedLocations = useAtomValue(selectedLocationsAtom);
     const setSelectedElement = useSetAtom(selectedElementAtom);
+    const setClickedLocation = useSetAtom(clickedLocationAtom);
 
     const canvasW = Math.round(props.mapW * scale) + borderWidth * 2;
     const canvasH = Math.round(props.mapH * scale) + borderWidth * 2;
@@ -74,7 +74,7 @@ export function ViewPort(props: Props) {
                 if (isDoubleClick) {
                     await dialog.open(LocationDialog, { code: locationCode });
                 } else {
-                    setLocationCode(locationCode);
+                    setClickedLocation(locationCode);
 
                     const shelf = shelves.find(x => x.locationCode === locationCode);
                     if (shelf) {
@@ -119,7 +119,7 @@ export function ViewPort(props: Props) {
                         {locationElements}
                     </div>
                     <div style={{ width: `${props.mapW}px`, height: `${props.mapH}px`, translate: `${borderWidth}px ${borderWidth}px`, transformOrigin: 'left top', scale: scale, position: 'absolute', pointerEvents: 'none' }}>
-                        <TaskArrowManager locationCode={locationCode} />
+                        <TaskArrowManager />
                     </div>
                 </div>
             </Draggable>
