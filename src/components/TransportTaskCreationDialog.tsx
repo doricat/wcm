@@ -21,7 +21,6 @@ export function TransportTaskCreationDialog(props: Props) {
         if (formRef.current) {
             const b = await formRef.current.submit();
             if (b) {
-                // TODO
                 onClose();
             }
         }

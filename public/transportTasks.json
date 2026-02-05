@@ -2,7 +2,6 @@
     "status": "success",
     "value": [
         {
-            "id": 1,
             "code": "BY2025020100001",
             "businessTypeCode": "F01",
             "businessTypeName": "货架调度",
@@ -11,8 +10,18 @@
             "startLocationCode": "L01",
             "endLocationCode": "L04",
             "shelfCode": "S01",
+            "shelfAngle": null,
+            "externalTaskCode": "",
+            "priority": 127,
+            "agvCode": null,
+            "message": null,
             "status": 2,
-            "createdAt": "2026-02-01T15:43:50.416"
+            "renewable": false,
+            "createdAt": "2026-02-01T15:43:50.416",
+            "scheduledAt": "2026-02-01T15:43:50.678",
+            "leavedAt": "2026-02-01T15:45:50.678",
+            "arrivedAt": null,
+            "createBy": "管理员"
         }
     ]
 }

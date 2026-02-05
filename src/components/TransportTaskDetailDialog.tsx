@@ -2,10 +2,11 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, 
 import CloseIcon from "@mui/icons-material/Close";
 import type { DialogProps, OpenDialogOptions } from "../types/dialog";
 import { DraggableDialogPaperComponent } from "./DraggableDialogPaperComponent";
-import { useEffect, useState } from "react";
-import { getTrasnportTaskDetail } from "../clients/transportTask";
-import { canAbort, canContinue, canRepeat, canTrigger, type TransportTaskDetailModel } from "../types/transportTask";
+import { canAbort, canContinue, canRepeat, canTrigger } from "../types/transportTask";
 import { getSourceLocation, getTargetLocation } from "../types/utils";
+import { useAtomValue } from "jotai";
+import { transportTasksAtom } from "../store";
+import { toYYYYMMDDHHmmss } from "../utils/datetime";
 
 interface Payload extends OpenDialogOptions<void> {
     code: string;
@@ -15,17 +16,8 @@ type Props = DialogProps<Payload, void>;
 
 export function TransportTaskDetailDialog(props: Props) {
     const { open, payload, onClose } = props;
-    const [task, setTask] = useState<TransportTaskDetailModel | null>(null);
-
-    const getTaskDetail = async () => {
-        const detail = await getTrasnportTaskDetail(payload.code);
-        setTask(detail);
-    };
-
-    useEffect(() => {
-        getTaskDetail();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [payload.code]);
+    const tasks = useAtomValue(transportTasksAtom);
+    const task = tasks.find(x => x.code === payload.code);
 
     return (
         <Dialog maxWidth="xs" fullWidth open={open} PaperComponent={DraggableDialogPaperComponent} hideBackdrop disableEscapeKeyDown disableEnforceFocus
@@ -59,10 +51,10 @@ export function TransportTaskDetailDialog(props: Props) {
                             <Typography variant="body1" align="left"><b>目的位置</b> {getTargetLocation(task)}</Typography>
                             <Typography variant="body1" align="left"><b>外部任务编号</b> {task.externalTaskCode}</Typography>
                             <Typography variant="body1" align="left"><b>创建用户</b> {task.createdBy}</Typography>
-                            <Typography variant="body1" align="left"><b>创建时间</b> {task.createdAt}</Typography>
-                            <Typography variant="body1" align="left"><b>离开时间</b> {task.leavedAt}</Typography>
-                            <Typography variant="body1" align="left"><b>到达时间</b> {task.arrivedAt}</Typography>
-                            <Typography variant="body1" align="left"><b>调度时间</b> {task.scheduledAt}</Typography>
+                            <Typography variant="body1" align="left"><b>创建时间</b> {toYYYYMMDDHHmmss(task.createdAt)}</Typography>
+                            <Typography variant="body1" align="left"><b>离开时间</b> {toYYYYMMDDHHmmss(task.leavedAt)}</Typography>
+                            <Typography variant="body1" align="left"><b>到达时间</b> {toYYYYMMDDHHmmss(task.arrivedAt)}</Typography>
+                            <Typography variant="body1" align="left"><b>调度时间</b> {toYYYYMMDDHHmmss(task.scheduledAt)}</Typography>
                             <Typography variant="body1" align="left"><b>提示信息</b> {task.message}</Typography>
                         </>
                     ) : null

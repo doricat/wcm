@@ -10,7 +10,7 @@ import { createNew } from "../types/transportTask";
 
 const schema = yup.object({
     shelfCode: yup.string().required("请选择货架或在地图上选择").max(50, "货架最多50个字符"),
-    toLocationCode: yup.string().required("请选择库位或在地图上选择").max(50, "货架最多50个字符")
+    toLocationCode: yup.string().required("请选择库位或在地图上选择").max(50, "库位最多50个字符")
 }).required();
 
 type FormValues = yup.InferType<typeof schema>;

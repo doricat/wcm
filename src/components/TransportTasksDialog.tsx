@@ -10,6 +10,7 @@ import { useState } from "react";
 import type { TransportTaskMapModel } from "../types/transportTask";
 import { useDialog } from "../hooks/useDialog";
 import { TransportTaskDetailDialog } from "./TransportTaskDetailDialog";
+import { toYYYYMMDDHHmmss } from "../utils/datetime";
 
 interface Payload extends OpenDialogOptions<void> {
     title: string;
@@ -82,7 +83,7 @@ export function TransportTasksDialog(props: Props) {
                                 <Typography variant="body1" align="left"><b>任务编码</b> {x.code}</Typography>
                                 <Typography variant="body1" align="left"><b>货架编码</b> {x.shelfCode}</Typography>
                                 <Typography variant="body1" align="left"><b>源/目的</b> {getLocations(x)}</Typography>
-                                <Typography variant="body1" align="left"><b>创建时间</b> {x.createdAt}</Typography>
+                                <Typography variant="body1" align="left"><b>创建时间</b> {toYYYYMMDDHHmmss(x.createdAt)}</Typography>
                             </ListItemButton>
                         ))
                     }

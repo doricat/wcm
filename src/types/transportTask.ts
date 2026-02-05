@@ -2,7 +2,6 @@ import { generateTaskCode } from "../utils";
 import { transportTaskStatuses } from "./enums";
 import type { LocationMapElementModel } from "./location";
 import type { ShelfMapElementModel } from "./shelf";
-import dayjs from "dayjs";
 
 export interface TransportTaskMapModel {
     code: string;
@@ -14,25 +13,22 @@ export interface TransportTaskMapModel {
     businessTypeCode: string;
     businessTypeName: string | null;
     status: number;
-    createdAt: string;
+    externalTaskCode: string | null;
+    agvCode: string | null;
+    shelfAngle: number | null;
+    priority: number | null;
+    createdBy: string | null;
+    createdAt: Date;
+    leavedAt: Date | null;
+    arrivedAt: Date | null;
+    scheduledAt: Date | null;
+    message: string | null;
 }
 
 export interface TransportTaskStatisticalData {
     pending: number;
     exceptional: number;
     executing: number;
-}
-
-export interface TransportTaskDetailModel extends TransportTaskMapModel {
-    externalTaskCode: string | null;
-    agvCode: string | null;
-    shelfAngle: number | null;
-    priority: number | null;
-    createdBy: string | null;
-    leavedAt: string | null;
-    arrivedAt: string | null;
-    scheduledAt: string | null;
-    message: string | null;
 }
 
 export function canTrigger(task: TransportTaskMapModel) {
@@ -81,6 +77,15 @@ export function createNew(shelfCode: string, toLocationCode: string, shelves: Sh
         businessTypeCode: 'F01',
         businessTypeName: '货架调度',
         status: transportTaskStatuses.executing,
-        createdAt: dayjs(new Date()).format('YYYY-MM-DDTHH:mm:ssZ'),
+        externalTaskCode: null,
+        agvCode: null,
+        shelfAngle: null,
+        priority: 127,
+        createdBy: '管理员',
+        createdAt: new Date(),
+        leavedAt: null,
+        arrivedAt: null,
+        scheduledAt: new Date(),
+        message: null
     };
 }
