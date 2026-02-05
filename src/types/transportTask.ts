@@ -31,8 +31,12 @@ export interface TransportTaskStatisticalData {
     executing: number;
 }
 
-export function canTrigger(task: TransportTaskMapModel) {
-    return task.status >= transportTaskStatuses.pending && task.status < transportTaskStatuses.renewable;
+export function canTriggerStart(task: TransportTaskMapModel) {
+    return task.status >= transportTaskStatuses.pending && task.status < transportTaskStatuses.renewable && task.leavedAt == null;
+}
+
+export function canTriggerEnd(task: TransportTaskMapModel) {
+    return task.status >= transportTaskStatuses.pending && task.status < transportTaskStatuses.renewable && task.leavedAt != null;
 }
 
 export function canContinue(task: TransportTaskMapModel) {
@@ -88,6 +92,17 @@ export function createNew(shelfCode: string, toLocationCode: string, shelves: Sh
         scheduledAt: new Date(),
         message: null
     };
+}
+
+export function triggerTaskStart(task: TransportTaskMapModel) {
+    task.leavedAt = new Date();
+    task.message = '被管理员触发开始';
+}
+
+export function triggerTaskEnd(task: TransportTaskMapModel) {
+    task.status = transportTaskStatuses.completed;
+    task.arrivedAt = new Date();
+    task.message = '被管理员触发结束';
 }
 
 export function abortTask(task: TransportTaskMapModel) {

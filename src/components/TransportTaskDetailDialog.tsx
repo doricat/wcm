@@ -2,10 +2,10 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, 
 import CloseIcon from "@mui/icons-material/Close";
 import type { DialogProps, OpenDialogOptions } from "../types/dialog";
 import { DraggableDialogPaperComponent } from "./DraggableDialogPaperComponent";
-import { abortTask, canAbort, canContinue, canRepeat, canTrigger } from "../types/transportTask";
+import { abortTask, canAbort, canContinue, canRepeat, canTriggerEnd, canTriggerStart, triggerTaskEnd, triggerTaskStart } from "../types/transportTask";
 import { getSourceLocation, getTargetLocation } from "../types/utils";
 import { useAtom } from "jotai";
-import { transportTasksAtom } from "../store";
+import { shelvesAtom, transportTasksAtom } from "../store";
 import { toYYYYMMDDHHmmss } from "../utils/datetime";
 import { dialogSlotProps } from "./props";
 import { useDialog } from "../hooks/useDialog";
@@ -20,7 +20,44 @@ export function TransportTaskDetailDialog(props: Props) {
     const { open, payload, onClose } = props;
     const dialog = useDialog();
     const [tasks, setTasks] = useAtom(transportTasksAtom);
+    const [shelves, setShelves] = useAtom(shelvesAtom);
     const task = tasks.find(x => x.code === payload.code);
+
+    const triggerStart = async () => {
+        if (!task) {
+            return;
+        }
+
+        const b = await dialog.confirm(`确定触发开始 ${task.code}？`, { severity: 'warning' });
+        if (b) {
+            triggerTaskStart(task);
+            setTasks([...tasks]);
+
+            const shelf = shelves.find(x => x.code === task.shelfCode);
+            if (shelf) {
+                shelf.locationCode = null;
+                setShelves([...shelves]);
+            }
+        }
+    };
+
+    const triggerEnd = async () => {
+        if (!task) {
+            return;
+        }
+
+        const b = await dialog.confirm(`确定触发结束 ${task.code}？`, { severity: 'warning' });
+        if (b) {
+            triggerTaskEnd(task);
+            setTasks([...tasks]);
+
+            const shelf = shelves.find(x => x.code === task.shelfCode);
+            if (shelf) {
+                shelf.locationCode = task.endLocationCode;
+                setShelves([...shelves]);
+            }
+        }
+    };
 
     const abort = async () => {
         if (!task) {
@@ -68,10 +105,10 @@ export function TransportTaskDetailDialog(props: Props) {
                     task ? (
                         <>
                             <Button size="small" variant="contained" disabled={!canContinue(task)} color="inherit">继续</Button>
-                            <Button size="small" variant="contained" disabled={!canTrigger(task)} onClick={abort} color="inherit">触发开始</Button>
-                            <Button size="small" variant="contained" disabled={!canTrigger(task)} onClick={abort} color="primary">触发结束</Button>
+                            <Button size="small" variant="contained" disabled={!canTriggerStart(task)} onClick={triggerStart} color="inherit">触发开始</Button>
+                            <Button size="small" variant="contained" disabled={!canTriggerEnd(task)} onClick={triggerEnd} color="primary">触发结束</Button>
                             <Button size="small" variant="contained" disabled={!canAbort(task)} onClick={abort} color="warning">中断</Button>
-                            <Button size="small" variant="contained" disabled={!canRepeat(task)} onClick={abort} color="inherit">复制</Button>
+                            <Button size="small" variant="contained" disabled={!canRepeat(task)} color="inherit">复制</Button>
                         </>
                     ) : null
                 }
