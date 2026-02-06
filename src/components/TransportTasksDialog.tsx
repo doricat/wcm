@@ -16,6 +16,7 @@ import { DialogCloseButton } from "./DialogCloseButton";
 interface Payload extends OpenDialogOptions<void> {
     title: string;
     status: number;
+    tasks?: TransportTaskMapModel[];
 }
 
 type Props = DialogProps<Payload, void>;
@@ -26,9 +27,11 @@ export function TransportTasksDialog(props: Props) {
     const [task, setTask] = useState<TransportTaskMapModel | null>(null);
     const [allTasks, setAllTasks] = useAtom(transportTasksAtom);
     const [clickedLocation, setClickedLocation] = useAtom(clickedLocationAtom);
-    const tasks = payload.status === transportTaskStatuses.executing
-        ? allTasks.filter(x => x.status === transportTaskStatuses.executing || x.status === transportTaskStatuses.renewable)
-        : allTasks.filter(x => x.status === payload.status);
+    const tasks = payload.tasks
+        ? payload.tasks
+        : payload.status === transportTaskStatuses.executing
+            ? allTasks.filter(x => x.status === transportTaskStatuses.executing || x.status === transportTaskStatuses.renewable)
+            : allTasks.filter(x => x.status === payload.status);
 
     const viewDetail = async () => {
         if (!task) {
