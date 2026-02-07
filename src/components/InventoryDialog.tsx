@@ -39,6 +39,7 @@ export function InventoryDialog(props: Props) {
             if (b) {
                 const arr = inventories.filter(x => x.code !== inventory.code);
                 setInventories(arr);
+                setInventory(null);
             }
         }
     };
