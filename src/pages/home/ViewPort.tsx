@@ -10,7 +10,6 @@ import type { InventoryMapModel } from "../../types/inventory";
 import { LocationDialog } from "../../components/LocationDialog";
 import { useDialog } from "../../hooks/useDialog";
 import { TaskArrowManager } from "../../components/TaskArrowManager";
-import { transportTaskStatuses } from "../../types/enums";
 
 interface Props {
     mapW: number;
@@ -78,12 +77,14 @@ export function ViewPort(props: Props) {
 
                     const shelf = shelves.find(x => x.locationCode === locationCode);
                     if (shelf) {
-                        if (shelf.enabled) {
+                        const b = tasks.some(x => x.shelfCode === shelf.code);
+                        if (shelf.enabled && !b) {
                             setSelectedElement({ code: shelf.code, type: 'shelf' });
                         }
                     } else {
                         const location = locations.find(x => x.code === locationCode);
-                        if (location && location.enabled) {
+                        const b = tasks.some(x => x.endLocationCode === locationCode);
+                        if (location && location.enabled && !b) {
                             setSelectedElement({ code: locationCode, type: 'location' });
                         }
                     }
@@ -98,8 +99,8 @@ export function ViewPort(props: Props) {
             continue;
         }
 
-        const leaveTask = tasks.find(x => x.startLocationCode === location.code && x.status >= transportTaskStatuses.pending && x.status <= transportTaskStatuses.renewable);
-        const arriveTasks = tasks.filter(x => x.endLocationCode === location.code && x.status >= transportTaskStatuses.pending && x.status <= transportTaskStatuses.renewable);
+        const leaveTask = tasks.find(x => x.startLocationCode === location.code);
+        const arriveTasks = tasks.filter(x => x.endLocationCode === location.code);
 
         let shelf = shelves.find(x => x.locationCode == location.code);
         if (!shelf && arriveTasks.length > 0) {

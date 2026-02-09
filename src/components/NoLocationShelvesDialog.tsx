@@ -6,7 +6,7 @@ import { DraggableDialogPaperComponent } from "./DraggableDialogPaperComponent";
 import { useAtomValue } from "jotai";
 import { inventoriesAtom, shelvesAtom, transportTasksAtom } from "../store";
 import type { NoLocationShelfMapElementModel, ShelfMapElementModel } from "../types/shelf";
-import { getYesOrNo, transportTaskStatuses } from "../types/enums";
+import { getYesOrNo } from "../types/enums";
 import { useMemo } from "react";
 import { dialogSlotProps } from "./props";
 import { DialogCloseButton } from "./DialogCloseButton";
@@ -44,7 +44,7 @@ export function NoLocationShelvesDialog(props: Props) {
     }, [dialog]);
 
     for (const item of shelves) {
-        if (item.locationCode || tasks.some(x => x.shelfCode == item.code && x.status >= transportTaskStatuses.pending && x.status <= transportTaskStatuses.renewable)) {
+        if (item.locationCode || tasks.some(x => x.shelfCode == item.code)) {
             continue;
         }
 

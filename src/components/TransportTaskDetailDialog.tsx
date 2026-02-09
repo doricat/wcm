@@ -1,7 +1,7 @@
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from "@mui/material";
 import type { DialogProps, OpenDialogOptions } from "../types/dialog";
 import { DraggableDialogPaperComponent } from "./DraggableDialogPaperComponent";
-import { abortTask, canAbort, canContinue, canRepeat, canTriggerEnd, canTriggerStart, triggerTaskEnd, triggerTaskStart } from "../types/transportTask";
+import { abortTask, canAbort, canContinue, canRepeat, canTriggerEnd, canTriggerStart, triggerTaskEnd, triggerTaskStart, type TransportTaskMapModel } from "../types/transportTask";
 import { getSourceLocation, getTargetLocation } from "../types/utils";
 import { useAtom } from "jotai";
 import { clickedLocationAtom, shelvesAtom, transportTasksAtom } from "../store";
@@ -9,6 +9,7 @@ import { toYYYYMMDDHHmmss } from "../utils/datetime";
 import { dialogSlotProps } from "./props";
 import { useDialog } from "../hooks/useDialog";
 import { DialogCloseButton } from "./DialogCloseButton";
+import { useEffect, useState } from "react";
 
 interface Payload extends OpenDialogOptions<void> {
     code: string;
@@ -22,7 +23,16 @@ export function TransportTaskDetailDialog(props: Props) {
     const [tasks, setTasks] = useAtom(transportTasksAtom);
     const [shelves, setShelves] = useAtom(shelvesAtom);
     const [clickedLocation, setClickedLocation] = useAtom(clickedLocationAtom);
-    const task = tasks.find(x => x.code === payload.code);
+    const [task, setTask] = useState<TransportTaskMapModel | null>(null);
+
+    const doSetTask = () => {
+        setTask(tasks.find(x => x.code === payload.code) ?? null);
+    };
+
+    useEffect(() => {
+        doSetTask();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [payload.code]);
 
     const triggerStart = async () => {
         if (!task) {
@@ -50,7 +60,7 @@ export function TransportTaskDetailDialog(props: Props) {
         const b = await dialog.confirm(`确定触发结束 ${task.code}？`, { severity: 'warning' });
         if (b) {
             triggerTaskEnd(task);
-            setTasks([...tasks]);
+            setTasks(tasks.filter(x => x.code !== task.code));
 
             const shelf = shelves.find(x => x.code === task.shelfCode);
             if (shelf) {
@@ -72,7 +82,7 @@ export function TransportTaskDetailDialog(props: Props) {
         const b = await dialog.confirm(`确定中断任务 ${task.code}？`, { severity: 'warning' });
         if (b) {
             abortTask(task);
-            setTasks([...tasks]);
+            setTasks(tasks.filter(x => x.code !== task.code));
 
             if (clickedLocation && (clickedLocation === task.startLocationCode || clickedLocation === task.endLocationCode)) {
                 setClickedLocation(null);

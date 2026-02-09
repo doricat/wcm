@@ -2,7 +2,6 @@ import { useAtomValue } from "jotai";
 import { clickedLocationAtom, locationsAtom, transportTasksAtom } from "../store";
 import { AnimatedArrow } from "./AnimatedArrow";
 import type { LocationMapElementModel } from "../types/location";
-import { transportTaskStatuses } from "../types/enums";
 
 export function TaskArrowManager() {
     const tasks = useAtomValue(transportTasksAtom);
@@ -13,7 +12,7 @@ export function TaskArrowManager() {
         return null;
     }
 
-    const activeTasks = tasks.filter(x => (x.startLocationCode === clickedLocation || x.endLocationCode === clickedLocation) && x.status >= transportTaskStatuses.pending && x.status <= transportTaskStatuses.renewable);
+    const activeTasks = tasks.filter(x => x.startLocationCode === clickedLocation || x.endLocationCode === clickedLocation);
     if (activeTasks.length === 0) {
         return null;
     }

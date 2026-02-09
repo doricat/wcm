@@ -49,7 +49,7 @@ export function TransportTasksDialog(props: Props) {
         const b = await dialog.confirm(`确定中断任务 ${task.code}？`, { severity: 'warning' });
         if (b) {
             abortTask(task);
-            setAllTasks([...allTasks]);
+            setAllTasks(tasks.filter(x => x.code !== task.code));
             setTask(null);
 
             if (clickedLocation && (clickedLocation === task.startLocationCode || clickedLocation === task.endLocationCode)) {
