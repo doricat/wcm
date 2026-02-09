@@ -2,7 +2,9 @@
     "status": "success",
     "value": [
         {
-            "code": "A1"
+            "code": "A1",
+            "name": "A1",
+            "type": ""
         }
     ]
 }
