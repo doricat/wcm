@@ -10,8 +10,8 @@ import { LocationAutocomplete } from "./LocationAutocomplete";
 import { ShelfAutocomplete } from "./ShelfAutocomplete";
 
 const schema = yup.object({
-    shelfCode: yup.string().required("请选择货架或在地图上选择").max(50, "货架最多50个字符"),
-    locationCode: yup.string().required("请选择库位或在地图上选择").max(50, "库位最多50个字符")
+    shelfCode: yup.string().required('请选择货架或在地图上选择').max(50, '货架最多50个字符'),
+    locationCode: yup.string().required('请选择库位或在地图上选择').max(50, '库位最多50个字符')
 }).required();
 
 type FormValues = yup.InferType<typeof schema>;
@@ -45,7 +45,7 @@ export const TransportTaskCreationForm = forwardRef((props: Props, ref: React.Re
     } = methods;
 
     const onSubmit = async (data: FormValues) => {
-        setTasks([...tasks, createNew(data.shelfCode, data.locationCode, shelves, locations)]);
+        setTasks([...tasks, createNew(data.shelfCode, data.locationCode, shelves, locations, tasks)]);
         reset();
     };
 

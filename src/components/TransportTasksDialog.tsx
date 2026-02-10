@@ -86,7 +86,7 @@ export function TransportTasksDialog(props: Props) {
                 <List>
                     {
                         tasks.map(x => (
-                            <ListItemButton key={x.code} onClick={() => setTask(x)} selected={x === task} style={{ flexDirection: 'column', alignItems: 'start' }}>
+                            <ListItemButton key={x.code} onClick={() => { setTask(x); setClickedLocation(x.endLocationCode); }} selected={x === task} style={{ flexDirection: 'column', alignItems: 'start' }}>
                                 <Typography variant="body1" align="left"><b>任务类型</b> {x.businessTypeName}</Typography>
                                 <Typography variant="body1" align="left"><b>任务编码</b> {x.code}</Typography>
                                 <Typography variant="body1" align="left"><b>货架编码</b> {x.shelfCode}</Typography>
@@ -100,6 +100,6 @@ export function TransportTasksDialog(props: Props) {
             <DialogActions>
                 {buttons}
             </DialogActions>
-        </Dialog>
+        </Dialog >
     );
 }

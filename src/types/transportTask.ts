@@ -51,7 +51,7 @@ export function canAbort(task: TransportTaskMapModel) {
     return task.status >= transportTaskStatuses.pending && task.status <= transportTaskStatuses.renewable;
 }
 
-export function createNew(shelfCode: string, toLocationCode: string, shelves: ShelfMapElementModel[], locations: LocationMapElementModel[]) {
+export function createNew(shelfCode: string, toLocationCode: string, shelves: ShelfMapElementModel[], locations: LocationMapElementModel[], tasks: TransportTaskMapModel[]) {
     const shelf = shelves.find(x => x.code === shelfCode);
     if (!shelf) {
         throw new Error('Shelf not found.');
@@ -59,6 +59,10 @@ export function createNew(shelfCode: string, toLocationCode: string, shelves: Sh
 
     if (!shelf.locationCode) {
         throw new Error('Shelf location not found.');
+    }
+
+    if (tasks.some(x => x.shelfCode === shelf.code)) {
+        throw new Error('Shelf has active task.');
     }
 
     const startLocation = locations.find(x => x.code == shelf.locationCode);
@@ -69,6 +73,10 @@ export function createNew(shelfCode: string, toLocationCode: string, shelves: Sh
     const endLocation = locations.find(x => x.code == toLocationCode);
     if (!endLocation) {
         throw new Error('End location not found.');
+    }
+
+    if (tasks.some(x => x.endLocationCode === endLocation.code)) {
+        throw new Error('End location has active task.');
     }
 
     return {
