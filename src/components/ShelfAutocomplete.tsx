@@ -6,7 +6,7 @@ import { shelvesAtom } from "../store";
 import { Controller, useFormContext } from "react-hook-form";
 import type { ShelfMapElementModel } from "../types/shelf";
 
-export function ShelfAutocomplete(props: { label?: string; required: boolean; }) {
+export function ShelfAutocomplete(props: { label?: string; required: boolean; disabled?: boolean; }) {
     const [open, setOpen] = useState(false);
     const { control } = useFormContext<{ shelfCode: string; }>();
     const [inputValue, setInputValue] = useState('');
@@ -41,7 +41,8 @@ export function ShelfAutocomplete(props: { label?: string; required: boolean; })
                     getOptionKey={option => option.code}
                     getOptionLabel={option => option.code}
                     size="small"
-                    renderInput={(params) => <TextField {...params} slotProps={textFieldSlotProps} variant="outlined" label={props.label} error={!!error} helperText={error?.message} inputRef={ref} />}
+                    disabled={props.disabled ?? false}
+                    renderInput={(params) => <TextField {...params} required slotProps={textFieldSlotProps} variant="outlined" label={props.label} error={!!error} helperText={error?.message} inputRef={ref} />}
                 />
             )}
         />

@@ -40,7 +40,8 @@ export const TransportTaskCreationForm = forwardRef((props: Props, ref: React.Re
     const {
         handleSubmit,
         reset,
-        setValue
+        setValue,
+        formState: { isValid }
     } = methods;
 
     const onSubmit = async (data: FormValues) => {
@@ -51,18 +52,18 @@ export const TransportTaskCreationForm = forwardRef((props: Props, ref: React.Re
     useImperativeHandle(ref, () => ({
         submit: async () => {
             await handleSubmit(onSubmit)();
-            return true;
+            return isValid;
         }
     }));
 
     if (selectedElement) {
         if (selectedElement.type === 'shelf') {
             if (!shelfCode) {
-                setValue('shelfCode', selectedElement.code);
+                setValue('shelfCode', selectedElement.code, { shouldValidate: true });
             }
         } else {
             if (!toLocationCode) {
-                setValue('locationCode', selectedElement.code);
+                setValue('locationCode', selectedElement.code, { shouldValidate: true });
             }
         }
 
@@ -73,8 +74,8 @@ export const TransportTaskCreationForm = forwardRef((props: Props, ref: React.Re
         <FormProvider {...methods}>
             <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)}>
                 <Stack spacing={1}>
-                    <ShelfAutocomplete label="货架" required />
-                    <LocationAutocomplete label="库位" required />
+                    <ShelfAutocomplete label="货架" required disabled={!!shelfCode} />
+                    <LocationAutocomplete label="库位" required disabled={!!toLocationCode} />
                 </Stack>
             </Box>
         </FormProvider>
