@@ -15,7 +15,7 @@ const schema = yup.object({
     code: yup.string().required(),
     model: yup.string().required(),
     enabled: yup.boolean().required(),
-    locationCode: yup.string().required("请选择库位或在地图上选择").max(50, "库位最多50个字符")
+    locationCode: yup.string().notRequired().max(50, '库位最多50个字符').default('')
 }).required();
 
 type FormValues = yup.InferType<typeof schema>;
@@ -117,7 +117,7 @@ export const ShelfEditionForm = forwardRef((props: Props, ref: React.Ref<{ submi
                             <FormControlLabel control={<Switch checked={field.value} {...field} name="enabled" />} label="是否启用" />
                         )}
                     />
-                    <LocationAutocomplete label="绑定库位" required />
+                    <LocationAutocomplete label="绑定库位" required={false} />
                 </Stack>
             </Box>
         </FormProvider>

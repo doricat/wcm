@@ -42,7 +42,7 @@ export function LocationAutocomplete(props: { label?: string; required: boolean;
                     getOptionLabel={option => option.code}
                     size="small"
                     disabled={props.disabled ?? false}
-                    renderInput={(params) => <TextField {...params} required slotProps={textFieldSlotProps} variant="outlined" label={props.label} error={!!error} helperText={error?.message} inputRef={ref} />}
+                    renderInput={(params) => <TextField {...params} required={props.required} slotProps={textFieldSlotProps} variant="outlined" label={props.label} error={!!error} helperText={error?.message} inputRef={ref} />}
                 />
             )}
         />
