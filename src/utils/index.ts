@@ -12,6 +12,6 @@ export function generateBatchNo() {
     return dayjs(new Date()).format('YYMMDD');
 }
 
-export function getDisplayName({ code, name }: { code: string; name: string | null | undefined; }) {
+export function getDisplayName(code: string, name: string | null | undefined) {
     return name ? `${code}: ${name}` : code;
 }

@@ -9,6 +9,7 @@ import type { InventoryMapModel } from "../types/inventory";
 import { useState } from "react";
 import { useDialog } from "../hooks/useDialog";
 import { InventoryEditDialog } from "./InventoryEditDialog";
+import { getDisplayName } from "../utils";
 
 interface Payload extends OpenDialogOptions<void> {
     shelfCode: string;
@@ -54,8 +55,8 @@ export function InventoryDialog(props: Props) {
                         shelfInventories.map(x => (
                             <ListItemButton key={x.code} onClick={() => setInventory(x)} selected={x === inventory} style={{ flexDirection: 'column', alignItems: 'start' }}>
                                 <Typography variant="body1" align="left"><b>箱标签</b> {x.code}</Typography>
-                                <Typography variant="body1" align="left"><b>供应商</b> {x.supplierCode}</Typography>
-                                <Typography variant="body1" align="left"><b>物料</b> {x.materialCode}</Typography>
+                                <Typography variant="body1" align="left"><b>供应商</b> {getDisplayName(x.supplierCode, x.supplierName)}</Typography>
+                                <Typography variant="body1" align="left"><b>物料</b> {getDisplayName(x.materialCode, x.materialName)}</Typography>
                                 <Typography variant="body1" align="left"><b>批次号</b> {x.batchNo}</Typography>
                                 <Typography variant="body1" align="left"><b>数量</b> {x.qty}</Typography>
                                 <Typography variant="body1" align="left"><b>状态</b> {x.status}</Typography>

@@ -18,6 +18,7 @@ import { TransportTasksDialog } from "./TransportTasksDialog";
 import type { ShelfMapElementModel } from "../types/shelf";
 import { ShelfEditionDialog } from "./ShelfEditionDialog";
 import { LocationEditionDialog } from "./LocationEditionDialog";
+import { getDisplayName } from "../utils";
 
 interface Payload extends OpenDialogOptions<void> {
     code: string;
@@ -226,13 +227,13 @@ function LocationInventoryPanel({ inventory }: { inventory: InventoryMapModel })
                 <Typography variant="body1">供应商</Typography>
             </Grid>
             <Grid size={8}>
-                <Typography variant="body2">{inventory.supplierCode}</Typography>
+                <Typography variant="body2">{getDisplayName(inventory.supplierCode, inventory.supplierName)}</Typography>
             </Grid>
             <Grid size={4}>
                 <Typography variant="body1">物料</Typography>
             </Grid>
             <Grid size={8}>
-                <Typography variant="body2">{inventory.materialCode}</Typography>
+                <Typography variant="body2">{getDisplayName(inventory.materialCode, inventory.materialName)}</Typography>
             </Grid>
             <Grid size={4}>
                 <Typography variant="body1">批次号</Typography>
@@ -266,7 +267,7 @@ function LocationInventoriesPanel({ inventories }: { inventories: InventoryMapMo
                     <Typography variant="body1">物料</Typography>
                 </Grid>
                 <Grid size={8}>
-                    <Typography variant="body2">{item[0]} X{item[1].length}</Typography>
+                    <Typography variant="body2">{getDisplayName(item[0], item[1][0].materialName)} X{item[1].length}</Typography>
                 </Grid>
             </Fragment>
         );
