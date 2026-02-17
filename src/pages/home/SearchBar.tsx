@@ -10,10 +10,6 @@ import { useAtomValue, useSetAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
 
-interface Props {
-    refresh: () => Promise<void>;
-}
-
 const maxItem = 20;
 
 interface Inventory extends InventoryMapModel {
@@ -78,7 +74,7 @@ function search(keyWord: string, locations: LocationMapElementModel[], shelves: 
     return result;
 }
 
-export function SearchBar(props: Props) {
+export function SearchBar() {
     const locations = useAtomValue(locationsAtom);
     const shelves = useAtomValue(shelvesAtom);
     const inventories = useAtomValue(inventoriesAtom);
@@ -130,7 +126,7 @@ export function SearchBar(props: Props) {
                     <IconButton size="medium" onClick={() => navigate('/editor')}>
                         <Edit />
                     </IconButton>
-                    <IconButton size="medium" onClick={async () => await props.refresh()}>
+                    <IconButton size="medium" onClick={() => window.location.replace('/')}>
                         <Refresh />
                     </IconButton>
                 </Stack>

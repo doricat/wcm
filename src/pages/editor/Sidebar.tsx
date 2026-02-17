@@ -1,4 +1,4 @@
-import { Autocomplete, Stack, TextField } from "@mui/material";
+import { Autocomplete, Button, Stack, TextField } from "@mui/material";
 import { useAtomValue, useAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { inventoriesAtom, hiddenLocationsAtom, shelvesAtom } from "../../store";
@@ -7,6 +7,7 @@ import type { InventoryMapModel } from "../../types/inventory";
 import { getLocationElementId } from "../../types/location";
 import { LocationItem } from "./LocationItem";
 import { filterTake } from "../../types/utils";
+import { useNavigate } from "react-router";
 
 export function Sidebar() {
     const [open, setOpen] = useState(false);
@@ -16,6 +17,7 @@ export function Sidebar() {
     const [locations, setLocations] = useAtom(hiddenLocationsAtom);
     const shelves = useAtomValue(shelvesAtom);
     const inventories = useAtomValue(inventoriesAtom);
+    const navigate = useNavigate();
 
     const doSearch = () => {
         setOptions(filterTake(locations, x => x.code.toLowerCase().includes(inputValue.toLowerCase()), 20).map(x => x.code));
@@ -51,6 +53,11 @@ export function Sidebar() {
 
     return (
         <Stack spacing={1} style={{ height: '100vh', width: '210px', borderRight: '1px solid grey', padding: '4px' }}>
+            <Stack spacing={1} direction="row">
+                <Button size="small" variant="contained" color="inherit" onClick={() => navigate('/?from=editor')}>返回地图</Button>
+                <Button size="small" variant="contained" color="inherit">保存</Button>
+            </Stack>
+
             <Autocomplete open={open}
                 onOpen={() => setOpen(true)}
                 onClose={() => setOpen(false)}
