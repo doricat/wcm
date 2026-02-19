@@ -70,8 +70,14 @@ export function MapCanvas() {
                 ref={moveableRef}
                 target={targets}
                 draggable={true}
+                snappable={true}
+                snapGridWidth={5}
+                snapGridHeight={5}
+                isDisplayGridGuidelines={true}
                 onClickGroup={e => {
-                    selectoRef.current!.clickTarget(e.inputEvent, e.inputTarget);
+                    if (selectoRef.current) {
+                        selectoRef.current!.clickTarget(e.inputEvent, e.inputTarget);
+                    }
                 }}
                 onRender={e => {
                     e.target.style.cssText += e.cssText;
@@ -81,10 +87,6 @@ export function MapCanvas() {
                         ev.target.style.cssText += ev.cssText;
                     });
                 }}
-                snappable={true}
-                snapGridWidth={10}
-                snapGridHeight={10}
-                isDisplayGridGuidelines={true}
             />
             <Selecto
                 dragContainer={'.map-canvas'}
@@ -94,13 +96,10 @@ export function MapCanvas() {
                 selectFromInside={false}
                 ratio={0}
                 continueSelect={false}
-                toggleContinueSelect={"shift"}
+                toggleContinueSelect="shift"
                 onDragStart={(e) => {
                     const target = e.inputEvent.target;
-                    if (
-                        moveableRef.current!.isMoveableElement(target)
-                        || targets!.some(t => t === target || t.contains(target))
-                    ) {
+                    if ((target && moveableRef.current) && (moveableRef.current.isMoveableElement(target) || targets.some(x => x === target || x.contains(target)))) {
                         e.stop();
                     }
                 }}
@@ -111,38 +110,14 @@ export function MapCanvas() {
                     setTargets(e.selected);
                 }}
                 onSelectEnd={e => {
-                    if (e.isDragStartEnd) {
+                    if (e.isDragStartEnd && moveableRef.current) {
                         e.inputEvent.preventDefault();
-                        moveableRef.current!.waitToChangeTarget().then(() => {
+                        moveableRef.current.waitToChangeTarget().then(() => {
                             moveableRef.current!.dragStart(e.inputEvent);
                         });
                     }
                     setTargets(e.selected);
                 }}
-            // onDragStart={(e) => {
-            //     if (e.inputEvent.target.tagName === "svg" || e.inputEvent.target.closest("[data-moveable]")) {
-            //         e.stop();
-            //     }
-            // }}
-            // onSelectEnd={(e) => {
-            //     if (e.isDragStart) {
-            //         e.inputEvent.preventDefault();
-            //         // console.log(e.inputEvent);
-            //         // moveableRef.current?.dragStart(e.inputEvent);
-            //     }
-
-            //     console.log(e.selected);
-
-            //     // setSelectedTargets(e.selected as HTMLElement[]);
-            // }}
-            // onSelect={e => {
-            //     e.added.forEach(el => {
-            //         el.classList.add("selected");
-            //     });
-            //     e.removed.forEach(el => {
-            //         el.classList.remove("selected");
-            //     });
-            // }}
             />
             <div className="map-canvas" ref={setRef} style={{ width: '100vw', height: '100vh', margin: '16px', userSelect: 'none' }}>
                 {locationElements}

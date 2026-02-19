@@ -1,7 +1,7 @@
 import { Autocomplete, Button, Stack, TextField } from "@mui/material";
 import { useAtomValue, useAtom } from "jotai";
 import { useEffect, useState } from "react";
-import { inventoriesAtom, hiddenLocationsAtom, shelvesAtom } from "../../store";
+import { inventoriesAtom, hiddenLocationsAtom, shelvesAtom, locationsAtom } from "../../store";
 import { textFieldSlotProps } from "../../components/props";
 import type { InventoryMapModel } from "../../types/inventory";
 import { getLocationElementId } from "../../types/location";
@@ -15,6 +15,7 @@ export function Sidebar() {
     const [inputValue, setInputValue] = useState('');
     const [options, setOptions] = useState<string[]>([]);
     const [locations, setLocations] = useAtom(hiddenLocationsAtom);
+    const [locations2, setLocations2] = useAtom(locationsAtom);
     const shelves = useAtomValue(shelvesAtom);
     const inventories = useAtomValue(inventoriesAtom);
     const navigate = useNavigate();
@@ -36,6 +37,54 @@ export function Sidebar() {
         });
     };
 
+    const handleSave = () => {
+        const elements = document.querySelectorAll('.map-canvas .map-location-box');
+        for (const item of elements) {
+            const style = window.getComputedStyle(item);
+            const transform = style.transform || 'none';
+            if (transform === 'none') {
+                continue;
+            }
+
+            const matrixStr = transform.match(/matrix(3d)?\((.*?)\)/);
+            if (!matrixStr) {
+                continue;
+            }
+
+            const matrixValues = matrixStr[2].split(/\s*,\s*/).map(Number);
+            let x = matrixValues[4];
+            let y = matrixValues[5];
+
+            const translate = style.translate || 'none';
+            if (translate !== 'none') {
+                const translateValues = translate.split(/\s+/).map(x => Number.parseFloat(x.replace('px', '')));
+                if (translateValues.length === 1) {
+                    translateValues.push(0);
+                }
+                
+                x += translateValues[0];
+                y += translateValues[1];
+            }
+
+            x = Math.round(x);
+            y = Math.round(y);
+
+            const code = item.getAttribute('data-location-code');
+            if (code) {
+                const index = locations2.findIndex(x => x.code === code);
+                if (index >= 0) {
+                    const location = locations2[index];
+                    locations2.splice(index, 1);
+                    locations2.push({ ...location, x, y });
+
+                    (item as HTMLDivElement).style.transform = 'none';
+                }
+            }
+        }
+
+        setLocations2([...locations2]);
+    };
+
     const locationElements = [];
     for (const location of locations) {
         if (value !== '' && location.code !== value) {
@@ -55,7 +104,7 @@ export function Sidebar() {
         <Stack spacing={1} style={{ height: '100vh', width: '210px', borderRight: '1px solid grey', padding: '4px' }}>
             <Stack spacing={1} direction="row">
                 <Button size="small" variant="contained" color="inherit" onClick={() => navigate('/?from=editor')}>返回地图</Button>
-                <Button size="small" variant="contained" color="inherit">保存</Button>
+                <Button size="small" variant="contained" color="inherit" onClick={handleSave}>保存</Button>
             </Stack>
 
             <Autocomplete open={open}
