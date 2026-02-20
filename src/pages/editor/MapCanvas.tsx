@@ -1,6 +1,6 @@
 import { useAtom, useAtomValue } from "jotai";
 import { useDrop } from "react-dnd";
-import { inventoriesAtom, locationsAtom, shelvesAtom } from "../../store";
+import { inventoriesAtom, mapLocationsAtom, shelvesAtom } from "../../store";
 import type { InventoryMapModel } from "../../types/inventory";
 import { getLocationElementId, type Location } from "../../types/location";
 import { LocationMapElement } from "../../components/LocationMapElement";
@@ -10,7 +10,7 @@ import Moveable from "react-moveable";
 
 export function MapCanvas() {
     const ref = useRef<HTMLDivElement>(null);
-    const [locations, setLocations] = useAtom(locationsAtom);
+    const [mapLocations, setMapLocations] = useAtom(mapLocationsAtom);
     const shelves = useAtomValue(shelvesAtom);
     const inventories = useAtomValue(inventoriesAtom);
     const [targets, setTargets] = useState<Array<HTMLElement | SVGElement>>([]);
@@ -39,7 +39,7 @@ export function MapCanvas() {
                 offset = { x, y };
 
                 const location = { ...item, x, y, w: 100, h: 100 };
-                setLocations(prev => {
+                setMapLocations(prev => {
                     return [...prev, location];
                 });
             }
@@ -54,7 +54,7 @@ export function MapCanvas() {
     }, [drop]);
 
     const locationElements = [];
-    for (const location of locations) {
+    for (const location of mapLocations) {
         const shelf = shelves.find(x => x.locationCode == location.code);
         let shelfInventories: InventoryMapModel[] = [];
         if (shelf) {

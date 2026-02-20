@@ -1,7 +1,7 @@
 import { Autocomplete, Button, Stack, TextField } from "@mui/material";
 import { useAtomValue, useAtom } from "jotai";
 import { useEffect, useState } from "react";
-import { inventoriesAtom, hiddenLocationsAtom, shelvesAtom, locationsAtom } from "../../store";
+import { inventoriesAtom, locationsAtom, shelvesAtom, mapLocationsAtom } from "../../store";
 import { textFieldSlotProps } from "../../components/props";
 import type { InventoryMapModel } from "../../types/inventory";
 import { getLocationElementId } from "../../types/location";
@@ -14,8 +14,8 @@ export function Sidebar() {
     const [value, setValue] = useState('');
     const [inputValue, setInputValue] = useState('');
     const [options, setOptions] = useState<string[]>([]);
-    const [locations, setLocations] = useAtom(hiddenLocationsAtom);
-    const [locations2, setLocations2] = useAtom(locationsAtom);
+    const [locations, setLocations] = useAtom(locationsAtom);
+    const [mapLocations, setMapLocations] = useAtom(mapLocationsAtom);
     const shelves = useAtomValue(shelvesAtom);
     const inventories = useAtomValue(inventoriesAtom);
     const navigate = useNavigate();
@@ -71,18 +71,18 @@ export function Sidebar() {
 
             const code = item.getAttribute('data-location-code');
             if (code) {
-                const index = locations2.findIndex(x => x.code === code);
+                const index = mapLocations.findIndex(x => x.code === code);
                 if (index >= 0) {
-                    const location = locations2[index];
-                    locations2.splice(index, 1);
-                    locations2.push({ ...location, x, y });
+                    const location = mapLocations[index];
+                    mapLocations.splice(index, 1);
+                    mapLocations.push({ ...location, x, y });
 
                     (item as HTMLDivElement).style.transform = 'none';
                 }
             }
         }
 
-        setLocations2([...locations2]);
+        setMapLocations([...mapLocations]);
     };
 
     const locationElements = [];
@@ -103,7 +103,7 @@ export function Sidebar() {
     return (
         <Stack spacing={1} style={{ height: '100vh', width: '210px', borderRight: '1px solid grey', padding: '4px' }}>
             <Stack spacing={1} direction="row">
-                <Button size="small" variant="contained" color="inherit" onClick={() => navigate('/?from=editor')}>返回地图</Button>
+                <Button size="small" variant="contained" color="inherit" onClick={() => navigate('/')}>返回地图</Button>
                 <Button size="small" variant="contained" color="inherit" onClick={handleSave}>保存</Button>
             </Stack>
 

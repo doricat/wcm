@@ -3,7 +3,7 @@ import { useForm, FormProvider, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { textFieldSlotProps } from "./props";
-import { locationsAtom } from "../store";
+import { mapLocationsAtom } from "../store";
 import { useAtom } from "jotai";
 import { forwardRef, useImperativeHandle } from "react";
 import { NumberField } from "./NumberField";
@@ -28,7 +28,7 @@ interface Props {
 
 export const LocationEditionForm = forwardRef((props: Props, ref: React.Ref<{ submit: () => Promise<boolean> }>) => {
     const { location } = props;
-    const [locations, setLocations] = useAtom(locationsAtom);
+    const [locations, setLocations] = useAtom(mapLocationsAtom);
 
     const methods = useForm<FormValues>({
         resolver: yupResolver(schema),

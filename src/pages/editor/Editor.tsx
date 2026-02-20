@@ -2,33 +2,16 @@ import { Stack } from "@mui/material";
 import { Sidebar } from "./Sidebar";
 import { MapCanvas } from "./MapCanvas";
 import { useEffect, useState } from "react";
-import { useSetAtom } from "jotai";
-import { getShelves, getInventories, getLocations } from "../../clients/map";
-import { hiddenLocationsAtom, locationsAtom, shelvesAtom, inventoriesAtom } from "../../store";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
-import { getHiddenLocations } from "../../clients/location";
+import { LoadingProgress } from "../../components/LoadingProgress";
 
 export function Editor() {
     const [loading, setLoading] = useState(false);
-    const setHiddenLocations = useSetAtom(hiddenLocationsAtom);
-    const setLocations = useSetAtom(locationsAtom);
-    const setShelves = useSetAtom(shelvesAtom);
-    const setInventories = useSetAtom(inventoriesAtom);
 
     const loadElements = async () => {
         setLoading(true);
-
-        const hiddenLocations = await getHiddenLocations();
-        const locations = await getLocations();
-        const shelves = await getShelves();
-        const inventories = await getInventories();
-
-        setHiddenLocations(hiddenLocations);
-        setLocations(locations);
-        setShelves(shelves);
-        setInventories(inventories);
-
+        await new Promise((resolve) => setTimeout(resolve, 1000));
         setLoading(false);
     };
 
@@ -41,7 +24,7 @@ export function Editor() {
         <>
             {
                 loading
-                    ? <p>loading</p>
+                    ? <LoadingProgress />
                     :
                     <DndProvider backend={HTML5Backend}>
                         <Stack direction="row">

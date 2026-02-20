@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { LocationMapElement } from "../../components/LocationMapElement";
 import Draggable, { type DraggableData } from "react-draggable";
 import { useAtomValue, useSetAtom } from "jotai";
-import { selectedTasksAtom, inventoriesAtom, locationsAtom, scaleAtom, selectedLocationsAtom, shelvesAtom, transportTasksAtom } from "../../store";
+import { selectedTasksAtom, inventoriesAtom, mapLocationsAtom, scaleAtom, selectedLocationsAtom, shelvesAtom, transportTasksAtom } from "../../store";
 import { getLocationElementId } from "../../types/location";
 import { type Rectangle } from "../../types/rectangle";
 import { intersect } from "../../types/map";
@@ -25,7 +25,7 @@ export function ViewPort(props: Props) {
     const dialog = useDialog();
 
     const scale = useAtomValue(scaleAtom);
-    const locations = useAtomValue(locationsAtom);
+    const locations = useAtomValue(mapLocationsAtom);
     const shelves = useAtomValue(shelvesAtom);
     const inventories = useAtomValue(inventoriesAtom);
     const tasks = useAtomValue(transportTasksAtom);

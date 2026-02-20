@@ -2,7 +2,7 @@ import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Gri
 import type { DialogProps, OpenDialogOptions } from "../types/dialog";
 import { DraggableDialogPaperComponent } from "./DraggableDialogPaperComponent";
 import { useAtom, useAtomValue } from "jotai";
-import { locationsAtom, shelvesAtom, inventoriesAtom, transportTasksAtom } from "../store";
+import { mapLocationsAtom, shelvesAtom, inventoriesAtom, transportTasksAtom } from "../store";
 import { getShelfModels, type LocationMapElementModel } from "../types/location";
 import { getInventoryStatusName, getYesOrNo, transportTaskStatuses } from "../types/enums";
 import { groupByMaterial, type InventoryMapModel } from "../types/inventory";
@@ -29,7 +29,7 @@ type Props = DialogProps<Payload, void>;
 export function LocationDialog(props: Props) {
     const { open, payload, onClose } = props;
     const dialog = useDialog();
-    const locations = useAtomValue(locationsAtom);
+    const locations = useAtomValue(mapLocationsAtom);
     const shelves = useAtomValue(shelvesAtom);
     const [inventories, setInventories] = useAtom(inventoriesAtom);
     const tasks = useAtomValue(transportTasksAtom);
