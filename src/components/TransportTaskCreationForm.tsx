@@ -100,7 +100,7 @@ export const TransportTaskCreationForm = forwardRef((props: Props, ref: React.Re
             <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)}>
                 <Stack spacing={1}>
                     <ShelfAutocomplete label="货架" required disabled={!!shelfCode} />
-                    <LocationAutocomplete label="库位" required disabled={!!toLocationCode} />
+                    <LocationAutocomplete label="库位" required disabled={!!toLocationCode} locations={locations} />
                 </Stack>
             </Box>
         </FormProvider>

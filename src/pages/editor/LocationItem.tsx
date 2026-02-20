@@ -1,13 +1,13 @@
 import { Paper, Stack, Typography } from "@mui/material";
 import CloseIcon from "@mui/icons-material/Close";
-import type { Location } from "../../types/location";
+import type { LocationModel } from "../../types/location";
 import type { ShelfMapElementModel } from "../../types/shelf";
 import { groupByMaterial, type InventoryMapModel } from "../../types/inventory";
 import { useDrag } from "react-dnd";
 import { useCallback, useRef } from "react";
 
 interface Props {
-    location: Location;
+    location: LocationModel;
     shelf?: ShelfMapElementModel;
     inventories: InventoryMapModel[];
     dropEnd: (code: string) => void;

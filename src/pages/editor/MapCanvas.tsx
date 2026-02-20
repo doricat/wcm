@@ -2,7 +2,7 @@ import { useAtom, useAtomValue } from "jotai";
 import { useDrop } from "react-dnd";
 import { inventoriesAtom, mapLocationsAtom, shelvesAtom } from "../../store";
 import type { InventoryMapModel } from "../../types/inventory";
-import { getLocationElementId, type Location } from "../../types/location";
+import { getLocationElementId, type LocationModel } from "../../types/location";
 import { LocationMapElement } from "../../components/LocationMapElement";
 import { useCallback, useImperativeHandle, useRef, useState } from "react";
 import Selecto from "react-selecto";
@@ -22,7 +22,7 @@ export function MapCanvas({ ref }: { ref: React.Ref<{ saveLayout: () => void }>;
 
     const [, drop] = useDrop(() => ({
         accept: 'location',
-        drop: (item: Location, monitor) => {
+        drop: (item: LocationModel, monitor) => {
             const clientOffset = monitor.getClientOffset();
             const initialClientOffset = monitor.getInitialClientOffset();
             const initialSourceClientOffset = monitor.getInitialSourceClientOffset();

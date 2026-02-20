@@ -1,7 +1,7 @@
 import { atom } from "jotai";
 import type { TransportTaskMapModel, TransportTaskStatisticalData } from "../types/transportTask";
 import type { AreaMapElementModel } from "../types/area";
-import type { Location, LocationMapElementModel } from "../types/location";
+import type { LocationModel, LocationMapElementModel } from "../types/location";
 import type { ShelfMapElementModel } from "../types/shelf";
 import type { InventoryMapModel } from "../types/inventory";
 import { transportTaskStatuses } from "../types/enums";
@@ -22,10 +22,11 @@ export const layerCtrlAtom = atom<MapElementLayerCtrl>({
 export const scaleAtom = atom<number>(1);
 
 export const areasAtom = atom<AreaMapElementModel[]>([
-    { code: 'A1', name: 'A1', type: '' }
+    { code: 'A1', name: 'A1', type: '' },
+    { code: 'A2', name: 'A2', type: '' },
 ]);
 
-export const locationsAtom = atom<Location[]>([
+export const locationsAtom = atom<LocationModel[]>([
     { code: 'L12', shelfModels: ['1212', '1313'], enabled: true, areaCode: 'A1', externalCode: 'L12', level: 1 },
     { code: 'L13', shelfModels: ['1212', '1313'], enabled: true, areaCode: 'A1', externalCode: 'L13', level: 1 },
     { code: 'L14', shelfModels: ['1212', '1313'], enabled: true, areaCode: 'A1', externalCode: 'L14', level: 1 }

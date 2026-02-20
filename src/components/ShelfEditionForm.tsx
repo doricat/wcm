@@ -3,7 +3,7 @@ import { useForm, Controller, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 import { textFieldSlotProps } from "./props";
-import { shelfModelsAtom, shelvesAtom, transportTasksAtom } from "../store";
+import { mapLocationsAtom, shelfModelsAtom, shelvesAtom, transportTasksAtom } from "../store";
 import { useAtom, useAtomValue } from "jotai";
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import type { ShelfMapElementModel } from "../types/shelf";
@@ -30,6 +30,7 @@ export const ShelfEditionForm = forwardRef((props: Props, ref: React.Ref<{ submi
     const [shelves, setShelves] = useAtom(shelvesAtom);
     const shelfModels = useAtomValue(shelfModelsAtom);
     const tasks = useAtomValue(transportTasksAtom);
+    const locations = useAtomValue(mapLocationsAtom);
 
     useEffect(() => {
         const handleEvt = (evt: CustomEventInit<{ code: string; }>) => {
@@ -117,7 +118,7 @@ export const ShelfEditionForm = forwardRef((props: Props, ref: React.Ref<{ submi
                             <FormControlLabel control={<Switch checked={field.value} {...field} name="enabled" />} label="是否启用" />
                         )}
                     />
-                    <LocationAutocomplete label="绑定库位" required={false} />
+                    <LocationAutocomplete label="绑定库位" required={false} locations={locations} />
                 </Stack>
             </Box>
         </FormProvider>

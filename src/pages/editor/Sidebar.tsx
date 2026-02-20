@@ -1,32 +1,17 @@
-import { Autocomplete, Button, Stack, TextField } from "@mui/material";
+import { Button, Stack } from "@mui/material";
 import { useAtomValue, useAtom } from "jotai";
-import { useEffect, useState } from "react";
 import { inventoriesAtom, locationsAtom, shelvesAtom } from "../../store";
-import { textFieldSlotProps } from "../../components/props";
 import type { InventoryMapModel } from "../../types/inventory";
 import { getLocationElementId } from "../../types/location";
 import { LocationItem } from "./LocationItem";
-import { filterTake } from "../../types/utils";
+import { SearchForm } from "./SearchForm";
+import { useState } from "react";
 
 export function Sidebar(props: { save: () => void; }) {
-    const [open, setOpen] = useState(false);
-    const [value, setValue] = useState('');
-    const [inputValue, setInputValue] = useState('');
-    const [options, setOptions] = useState<string[]>([]);
     const [locations, setLocations] = useAtom(locationsAtom);
     const shelves = useAtomValue(shelvesAtom);
     const inventories = useAtomValue(inventoriesAtom);
-
-    const doSearch = () => {
-        setOptions(filterTake(locations, x => x.code.toLowerCase().includes(inputValue.toLowerCase()), 20).map(x => x.code));
-    };
-
-    useEffect(() => {
-        if (open) {
-            doSearch();
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [inputValue, open, locations]);
+    const [value, setValue] = useState<{ areaCode: string; locationCode: string }>({ areaCode: '', locationCode: '' });
 
     const handleDropEnd = (code: string) => {
         setLocations(prev => {
@@ -36,7 +21,7 @@ export function Sidebar(props: { save: () => void; }) {
 
     const locationElements = [];
     for (const location of locations) {
-        if (value !== '' && location.code !== value) {
+        if ((value.areaCode !== '' && location.areaCode !== value.areaCode) || (value.locationCode !== '' && location.code !== value.locationCode)) {
             continue;
         }
 
@@ -50,25 +35,11 @@ export function Sidebar(props: { save: () => void; }) {
     }
 
     return (
-        <Stack spacing={1} style={{ height: '100vh', width: '210px', borderRight: '1px solid grey', padding: '4px' }}>
+        <Stack spacing={1.5} style={{ height: '100vh', width: '210px', borderRight: '1px solid grey', padding: '4px' }}>
             <Stack spacing={1} direction="row">
                 <Button size="small" variant="contained" color="inherit" onClick={props.save}>保存</Button>
             </Stack>
-
-            <Autocomplete open={open}
-                onOpen={() => setOpen(true)}
-                onClose={() => setOpen(false)}
-                value={value}
-                inputValue={inputValue}
-                onInputChange={(_, newInputValue) => setInputValue(newInputValue)}
-                noOptionsText={inputValue.length === 0 ? null : "无匹配项"}
-                onChange={(_, option) => setValue(option ?? '')}
-                fullWidth={true}
-                options={options}
-                forcePopupIcon={false}
-                size="small"
-                renderInput={(params) => <TextField {...params} slotProps={textFieldSlotProps} variant="outlined" placeholder="搜索库位" />}
-            />
+            <SearchForm locations={value.areaCode === '' ? locations : locations.filter(x => x.areaCode === value.areaCode)} notify={(areaCode, locationCode) => setValue({ areaCode, locationCode })} />
             <Stack direction="row" justifyContent="flex-start" flexWrap="wrap">
                 {locationElements}
             </Stack>

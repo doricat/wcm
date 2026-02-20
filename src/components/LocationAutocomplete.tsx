@@ -1,18 +1,16 @@
 import { Autocomplete, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
-import type { LocationMapElementModel } from "../types/location";
+import type { LocationModel } from "../types/location";
 import { textFieldSlotProps } from "./props";
-import { useAtomValue } from "jotai";
-import { mapLocationsAtom } from "../store";
 import { Controller, useFormContext } from "react-hook-form";
 import { filterTake } from "../types/utils";
 
-export function LocationAutocomplete(props: { label?: string; required: boolean; disabled?: boolean; }) {
+export function LocationAutocomplete(props: { label?: string; required: boolean; disabled?: boolean; locations: LocationModel[] }) {
     const [open, setOpen] = useState(false);
     const { control } = useFormContext<{ locationCode: string; }>();
     const [inputValue, setInputValue] = useState('');
-    const [options, setOptions] = useState<LocationMapElementModel[]>([]);
-    const locations = useAtomValue(mapLocationsAtom);
+    const [options, setOptions] = useState<LocationModel[]>([]);
+    const { locations } = props;
 
     const doSearch = () => {
         setOptions(filterTake(locations, x => x.code.toLowerCase().includes(inputValue.toLowerCase()), 20));
