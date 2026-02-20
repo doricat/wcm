@@ -4,18 +4,21 @@ import { inventoriesAtom, mapLocationsAtom, shelvesAtom } from "../../store";
 import type { InventoryMapModel } from "../../types/inventory";
 import { getLocationElementId, type Location } from "../../types/location";
 import { LocationMapElement } from "../../components/LocationMapElement";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useImperativeHandle, useRef, useState } from "react";
 import Selecto from "react-selecto";
 import Moveable from "react-moveable";
+import { enqueueSnackbar } from "notistack";
+import { useNavigate } from "react-router";
 
-export function MapCanvas() {
-    const ref = useRef<HTMLDivElement>(null);
+export function MapCanvas({ ref }: { ref: React.Ref<{ saveLayout: () => void }>; }) {
+    const canvasRef = useRef<HTMLDivElement>(null);
     const [mapLocations, setMapLocations] = useAtom(mapLocationsAtom);
     const shelves = useAtomValue(shelvesAtom);
     const inventories = useAtomValue(inventoriesAtom);
     const [targets, setTargets] = useState<Array<HTMLElement | SVGElement>>([]);
     const moveableRef = useRef<Moveable>(null);
     const selectoRef = useRef<Selecto>(null);
+    const navigate = useNavigate();
 
     const [, drop] = useDrop(() => ({
         accept: 'location',
@@ -25,7 +28,7 @@ export function MapCanvas() {
             const initialSourceClientOffset = monitor.getInitialSourceClientOffset();
             let offset: { x: number, y: number; } | null = null;
             if (clientOffset && initialClientOffset && initialSourceClientOffset) {
-                const rect = ref.current!.getBoundingClientRect();
+                const rect = canvasRef.current!.getBoundingClientRect();
 
                 const itemCenterOffsetX = initialClientOffset.x - initialSourceClientOffset.x;
                 const itemCenterOffsetY = initialClientOffset.y - initialSourceClientOffset.y;
@@ -49,9 +52,64 @@ export function MapCanvas() {
     }));
 
     const setRef = useCallback((node: HTMLDivElement | null) => {
-        ref.current = node;
+        canvasRef.current = node;
         drop(node);
     }, [drop]);
+
+    const saveLayout = () => {
+        const elements = document.querySelectorAll('.map-canvas .map-location-box');
+        for (const item of elements) {
+            const style = window.getComputedStyle(item);
+            const transform = style.transform || 'none';
+            if (transform === 'none') {
+                continue;
+            }
+
+            const matrixStr = transform.match(/matrix(3d)?\((.*?)\)/);
+            if (!matrixStr) {
+                continue;
+            }
+
+            const matrixValues = matrixStr[2].split(/\s*,\s*/).map(Number);
+            let x = matrixValues[4];
+            let y = matrixValues[5];
+
+            const translate = style.translate || 'none';
+            if (translate !== 'none') {
+                const translateValues = translate.split(/\s+/).map(x => Number.parseFloat(x.replace('px', '')));
+                if (translateValues.length === 1) {
+                    translateValues.push(0);
+                }
+
+                x += translateValues[0];
+                y += translateValues[1];
+            }
+
+            x = Math.round(x);
+            y = Math.round(y);
+
+            const code = item.getAttribute('data-location-code');
+            if (code) {
+                const index = mapLocations.findIndex(x => x.code === code);
+                if (index >= 0) {
+                    const location = mapLocations[index];
+                    mapLocations.splice(index, 1);
+                    mapLocations.push({ ...location, x, y });
+
+                    (item as HTMLDivElement).style.transform = 'none';
+                }
+            }
+        }
+
+        setMapLocations([...mapLocations]);
+        setTargets([]);
+        enqueueSnackbar('保存成功', { variant: 'success' });
+        navigate('/');
+    };
+
+    useImperativeHandle(ref, () => ({
+        saveLayout
+    }));
 
     const locationElements = [];
     for (const location of mapLocations) {

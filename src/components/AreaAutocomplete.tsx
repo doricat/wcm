@@ -5,6 +5,7 @@ import { useAtomValue } from "jotai";
 import { areasAtom } from "../store";
 import { Controller, useFormContext } from "react-hook-form";
 import type { AreaMapElementModel } from "../types/area";
+import { filterTake } from "../types/utils";
 
 export function AreaAutocomplete(props: { label?: string; required: boolean; }) {
     const [open, setOpen] = useState(false);
@@ -14,7 +15,7 @@ export function AreaAutocomplete(props: { label?: string; required: boolean; }) 
     const areas = useAtomValue(areasAtom);
 
     const doSearch = () => {
-        setOptions(areas.filter(x => x.code.toLowerCase().includes(inputValue.toLowerCase())));
+        setOptions(filterTake(areas, x => x.code.toLowerCase().includes(inputValue.toLowerCase()), 20));
     };
 
     useEffect(() => {
@@ -30,7 +31,8 @@ export function AreaAutocomplete(props: { label?: string; required: boolean; }) 
                 <Autocomplete open={open}
                     onOpen={() => setOpen(true)}
                     onClose={() => setOpen(false)}
-                    value={{ code: value, name: null, type: '' }}
+                    value={areas.find(x => x.code === value) ?? null}
+                    isOptionEqualToValue={(option, selected) => option.code === selected.code}
                     inputValue={inputValue}
                     onInputChange={(_, newInputValue) => setInputValue(newInputValue)}
                     noOptionsText={inputValue.length === 0 ? null : "无匹配项"}

@@ -31,7 +31,8 @@ export function SupplierAutocomplete(props: { label?: string; required: boolean;
                 <Autocomplete open={open}
                     onOpen={() => setOpen(true)}
                     onClose={() => setOpen(false)}
-                    value={{ code: value, name: '' }}
+                    value={suppliers.find(x => x.code === value) ?? null}
+                    isOptionEqualToValue={(option, selected) => option.code === selected.code}
                     inputValue={inputValue}
                     onInputChange={(_, newInputValue) => setInputValue(newInputValue)}
                     noOptionsText={inputValue.length === 0 ? null : "无匹配项"}
@@ -40,7 +41,7 @@ export function SupplierAutocomplete(props: { label?: string; required: boolean;
                     options={options}
                     forcePopupIcon={false}
                     getOptionKey={option => option.code}
-                    getOptionLabel={option => getDisplayName(option.code, option.name)}
+                    getOptionLabel={option => option.code}
                     renderOption={(props, option) => (
                         <li {...props} key={option.code}>
                             {getDisplayName(option.code, option.name)}
