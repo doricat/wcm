@@ -1,6 +1,6 @@
 import type { Rectangle } from "./rectangle";
 
-export interface Location {
+export interface LocationModel {
     code: string;
     level: number;
     externalCode: string;
@@ -9,11 +9,11 @@ export interface Location {
     areaCode: string;
 }
 
-export interface LocationMapElementModel extends Location, Rectangle {
+export interface LocationMapElementModel extends LocationModel, Rectangle {
 
 }
 
-export function getLocationElementId(element: Location) {
+export function getLocationElementId(element: LocationModel) {
     return `${element.code}-location`;
 }
 

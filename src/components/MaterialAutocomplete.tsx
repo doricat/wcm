@@ -6,6 +6,7 @@ import { materialsAtom } from "../store";
 import { Controller, useFormContext } from "react-hook-form";
 import type { Material } from "../types/material";
 import { getDisplayName } from "../utils";
+import { filterTake } from "../types/utils";
 
 export function MaterialAutocomplete(props: { label?: string; required: boolean; }) {
     const [open, setOpen] = useState(false);
@@ -15,7 +16,7 @@ export function MaterialAutocomplete(props: { label?: string; required: boolean;
     const materials = useAtomValue(materialsAtom);
 
     const doSearch = () => {
-        setOptions(materials.filter(x => x.code.toLowerCase().includes(inputValue.toLowerCase())));
+        setOptions(filterTake(materials, x => x.code.toLowerCase().includes(inputValue.toLowerCase()), 20));
     };
 
     useEffect(() => {
@@ -31,7 +32,8 @@ export function MaterialAutocomplete(props: { label?: string; required: boolean;
                 <Autocomplete open={open}
                     onOpen={() => setOpen(true)}
                     onClose={() => setOpen(false)}
-                    value={{ code: value, name: '', type: '' }}
+                    value={materials.find(x => x.code === value) ?? null}
+                    isOptionEqualToValue={(option, selected) => option.code === selected.code}
                     inputValue={inputValue}
                     onInputChange={(_, newInputValue) => setInputValue(newInputValue)}
                     noOptionsText={inputValue.length === 0 ? null : "无匹配项"}
@@ -40,7 +42,7 @@ export function MaterialAutocomplete(props: { label?: string; required: boolean;
                     options={options}
                     forcePopupIcon={false}
                     getOptionKey={option => option.code}
-                    getOptionLabel={option => getDisplayName(option.code, option.name)}
+                    getOptionLabel={option => option.code}
                     renderOption={(props, option) => (
                         <li {...props} key={option.code}>
                             {getDisplayName(option.code, option.name)}

@@ -5,14 +5,10 @@ import type { LocationMapElementModel } from "../../types/location";
 import type { SearchResult } from "../../types/map";
 import type { ShelfMapElementModel } from "../../types/shelf";
 import { filterTake, groupBy } from "../../types/utils";
-import { inventoriesAtom, locationsAtom, selectedLocationsAtom, shelvesAtom } from "../../store";
+import { inventoriesAtom, mapLocationsAtom, selectedLocationsAtom, shelvesAtom } from "../../store";
 import { useAtomValue, useSetAtom } from "jotai";
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router";
-
-interface Props {
-    refresh: () => Promise<void>;
-}
 
 const maxItem = 20;
 
@@ -78,8 +74,8 @@ function search(keyWord: string, locations: LocationMapElementModel[], shelves: 
     return result;
 }
 
-export function SearchBar(props: Props) {
-    const locations = useAtomValue(locationsAtom);
+export function SearchBar() {
+    const locations = useAtomValue(mapLocationsAtom);
     const shelves = useAtomValue(shelvesAtom);
     const inventories = useAtomValue(inventoriesAtom);
     const setSelectedLocations = useSetAtom(selectedLocationsAtom);
@@ -130,7 +126,7 @@ export function SearchBar(props: Props) {
                     <IconButton size="medium" onClick={() => navigate('/editor')}>
                         <Edit />
                     </IconButton>
-                    <IconButton size="medium" onClick={async () => await props.refresh()}>
+                    <IconButton size="medium" onClick={() => window.location.replace('/')}>
                         <Refresh />
                     </IconButton>
                 </Stack>

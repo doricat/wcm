@@ -2,7 +2,7 @@ import { Box, Stack } from "@mui/material";
 import { useForm, FormProvider } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
-import { locationsAtom, shelvesAtom, transportTasksAtom } from "../store";
+import { mapLocationsAtom, shelvesAtom, transportTasksAtom } from "../store";
 import { useAtom, useAtomValue } from "jotai";
 import { forwardRef, useEffect, useImperativeHandle, useState } from "react";
 import { createNew } from "../types/transportTask";
@@ -27,7 +27,7 @@ export const TransportTaskCreationForm = forwardRef((props: Props, ref: React.Re
     const { shelfCode, toLocationCode } = props;
     const [selectedElement, setSelectedElement] = useState<SelectedElement | null>(null);
     const [tasks, setTasks] = useAtom(transportTasksAtom);
-    const locations = useAtomValue(locationsAtom);
+    const locations = useAtomValue(mapLocationsAtom);
     const shelves = useAtomValue(shelvesAtom);
 
     useEffect(() => {
@@ -100,7 +100,7 @@ export const TransportTaskCreationForm = forwardRef((props: Props, ref: React.Re
             <Box component="form" noValidate onSubmit={handleSubmit(onSubmit)}>
                 <Stack spacing={1}>
                     <ShelfAutocomplete label="货架" required disabled={!!shelfCode} />
-                    <LocationAutocomplete label="库位" required disabled={!!toLocationCode} />
+                    <LocationAutocomplete label="库位" required disabled={!!toLocationCode} locations={locations} />
                 </Stack>
             </Box>
         </FormProvider>

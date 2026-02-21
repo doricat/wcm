@@ -1,20 +1,19 @@
 import { Autocomplete, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
-import type { LocationMapElementModel } from "../types/location";
+import type { LocationModel } from "../types/location";
 import { textFieldSlotProps } from "./props";
-import { useAtomValue } from "jotai";
-import { locationsAtom } from "../store";
 import { Controller, useFormContext } from "react-hook-form";
+import { filterTake } from "../types/utils";
 
-export function LocationAutocomplete(props: { label?: string; required: boolean; disabled?: boolean; }) {
+export function LocationAutocomplete(props: { label?: string; required: boolean; disabled?: boolean; locations: LocationModel[] }) {
     const [open, setOpen] = useState(false);
     const { control } = useFormContext<{ locationCode: string; }>();
     const [inputValue, setInputValue] = useState('');
-    const [options, setOptions] = useState<LocationMapElementModel[]>([]);
-    const locations = useAtomValue(locationsAtom);
+    const [options, setOptions] = useState<LocationModel[]>([]);
+    const { locations } = props;
 
     const doSearch = () => {
-        setOptions(locations.filter(x => x.code.toLowerCase().includes(inputValue.toLowerCase())));
+        setOptions(filterTake(locations, x => x.code.toLowerCase().includes(inputValue.toLowerCase()), 20));
     };
 
     useEffect(() => {
@@ -30,7 +29,8 @@ export function LocationAutocomplete(props: { label?: string; required: boolean;
                 <Autocomplete open={open}
                     onOpen={() => setOpen(true)}
                     onClose={() => setOpen(false)}
-                    value={{ code: value, level: 0, externalCode: '', shelfModels: [], enabled: true, areaCode: '', x: 0, y: 0, w: 0, h: 0 }}
+                    value={locations.find(x => x.code === value) ?? null}
+                    isOptionEqualToValue={(option, selected) => option.code === selected.code}
                     inputValue={inputValue}
                     onInputChange={(_, newInputValue) => setInputValue(newInputValue)}
                     noOptionsText={inputValue.length === 0 ? null : "无匹配项"}

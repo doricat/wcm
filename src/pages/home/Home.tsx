@@ -2,46 +2,29 @@ import { TransportTaskCounter } from "./TransportTaskCounter";
 import { SearchBar } from "./SearchBar";
 import { CtrlGroup } from "./CtrlGroup";
 import { ViewPort } from "./ViewPort";
-import { LoadingProgress } from "./LoadingProgress";
+import { LoadingProgress } from "../../components/LoadingProgress";
 import { useEffect, useState } from "react";
-import { getAreas, getLocations, getShelves, getInventories, getTrasnportTasks } from "../../clients/map";
-import { useSetAtom } from "jotai";
-import { areasAtom, locationsAtom, shelvesAtom, inventoriesAtom, transportTasksAtom } from "../../store";
+import { useAtomValue } from "jotai";
+import { mapLocationsAtom } from "../../store";
 
 export function Home() {
     const [loading, setLoading] = useState(false);
     const [size, setSize] = useState<number[]>([0, 0]);
-
-    const setAreas = useSetAtom(areasAtom);
-    const setLocations = useSetAtom(locationsAtom);
-    const setShelves = useSetAtom(shelvesAtom);
-    const setInventories = useSetAtom(inventoriesAtom);
-    const setTransportTasks = useSetAtom(transportTasksAtom);
+    const mapLocations = useAtomValue(mapLocationsAtom);
 
     const loadElements = async () => {
         setLoading(true);
-
-        const areas = await getAreas();
-        const locations = await getLocations();
-        const shelves = await getShelves();
-        const inventories = await getInventories();
-        const transpotTasks = await getTrasnportTasks();
+        await new Promise((resolve) => setTimeout(resolve, 1000));
 
         let mapW = 0;
         let mapH = 0;
 
-        for (const location of locations) {
+        for (const location of mapLocations) {
             mapW = Math.max(location.x + location.w, mapW);
             mapH = Math.max(location.y + location.h, mapH);
         }
 
         setSize([mapW, mapH]);
-
-        setAreas(areas);
-        setLocations(locations);
-        setShelves(shelves);
-        setInventories(inventories);
-        setTransportTasks(transpotTasks);
 
         setLoading(false);
     };
@@ -59,7 +42,7 @@ export function Home() {
                     :
                     <>
                         <TransportTaskCounter />
-                        <SearchBar refresh={loadElements} />
+                        <SearchBar />
                         <CtrlGroup />
                     </>
             }

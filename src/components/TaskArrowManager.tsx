@@ -1,12 +1,12 @@
 import { useAtomValue } from "jotai";
-import { selectedTasksAtom, locationsAtom, transportTasksAtom } from "../store";
+import { selectedTasksAtom, mapLocationsAtom, transportTasksAtom } from "../store";
 import { AnimatedArrow } from "./AnimatedArrow";
 import type { LocationMapElementModel } from "../types/location";
 import type { TransportTaskMapModel } from "../types/transportTask";
 
 export function TaskArrowManager() {
     const tasks = useAtomValue(transportTasksAtom);
-    const locations = useAtomValue(locationsAtom);
+    const locations = useAtomValue(mapLocationsAtom);
     const atom = useAtomValue(selectedTasksAtom);
 
     if (!atom) {
