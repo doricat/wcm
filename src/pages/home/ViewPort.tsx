@@ -114,7 +114,7 @@ export function ViewPort(props: Props) {
 
         const selected = selectedLocations.some(x => x === location.code);
 
-        locationElements.push(<LocationMapElement key={getLocationElementId(location)} location={location} shelf={shelf} inventories={shelfInventories} arriveTasks={arriveTasks} leaveTask={leaveTask} onlyShelf={scale <= 0.42} selected={selected} />);
+        locationElements.push(<LocationMapElement key={getLocationElementId(location)} location={location} shelf={shelf} inventories={shelfInventories} arriveTasks={arriveTasks} leaveTask={leaveTask} onlyShelf={scale <= 0.42} selected={selected} className="map-location-box" />);
     }
 
     return (

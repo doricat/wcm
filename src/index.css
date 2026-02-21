@@ -23,6 +23,14 @@
   border-width: 3px;
 }
 
+.map-location-box2 {
+  z-index: 2;
+  position: absolute;
+  align-content: center;
+  opacity: 0.8;
+  cursor: move;
+}
+
 .animated-arrow {
   display: block;
   position: absolute;
@@ -61,4 +69,13 @@
   100% {
     offset-distance: 100%;
   }
+}
+
+.map-canvas {
+  background-image: linear-gradient(rgba(1, 87, 155, 0.1) 1px, transparent 1px),linear-gradient(90deg, rgba(1, 87, 155, 0.1) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.moveable-area {
+  cursor: move;
 }
