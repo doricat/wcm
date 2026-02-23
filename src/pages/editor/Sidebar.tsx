@@ -35,7 +35,7 @@ export function Sidebar(props: { save: () => void; }) {
     }
 
     return (
-        <Stack spacing={1.5} style={{ height: '100vh', width: '210px', borderRight: '1px solid grey', padding: '4px' }}>
+        <Stack spacing={1.5} style={{ height: '100vh', width: '230px', borderRight: '1px solid grey', padding: '4px', overflow: 'scroll' }}>
             <Stack spacing={1} direction="row">
                 <Button size="small" variant="contained" color="inherit" onClick={props.save}>保存</Button>
             </Stack>

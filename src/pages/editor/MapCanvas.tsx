@@ -143,7 +143,7 @@ export function MapCanvas({ ref }: { ref: React.Ref<{ saveLayout: () => void }>;
     }
 
     return (
-        <div style={{ width: 'calc(100vw - 210px)', height: '100vh', overflow: 'auto', position: 'relative' }}>
+        <div style={{ width: 'calc(100vw - 230px)', height: '100vh', overflow: 'auto', position: 'relative' }}>
             <Moveable
                 ref={moveableRef}
                 target={targets}
