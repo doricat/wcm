@@ -121,7 +121,7 @@ export function ViewPort(props: Props) {
         <div style={{ position: 'relative', width: '100vw', height: '100vh', overflow: 'hidden', zIndex: 0 }} >
             <Draggable nodeRef={dragNodeRef} bounds={draggableBounds} onStop={handleDragStop}>
                 <div style={{ position: 'relative', width: `${canvasW}px`, height: `${canvasH}px` }} ref={dragNodeRef}>
-                    <div style={{ width: `${props.mapW}px`, height: `${props.mapH}px`, translate: `${borderWidth}px ${borderWidth}px`, transformOrigin: 'left top', scale: scale, position: 'absolute' }} onDoubleClick={x => handleClick(x, true)} onClick={x => handleClick(x, false)}>
+                    <div style={{ width: `${props.mapW}px`, height: `${props.mapH}px`, translate: `${borderWidth}px ${borderWidth}px`, transformOrigin: 'left top', scale: scale, position: 'absolute', border: '1px dashed purple' }} onDoubleClick={x => handleClick(x, true)} onClick={x => handleClick(x, false)}>
                         {locationElements}
                     </div>
                     <div style={{ width: `${props.mapW}px`, height: `${props.mapH}px`, translate: `${borderWidth}px ${borderWidth}px`, transformOrigin: 'left top', scale: scale, position: 'absolute', pointerEvents: 'none' }}>
