@@ -1,8 +1,0 @@
-{
-    "status": "success",
-    "value": [
-        { "code": "L12", "shelfModels": ["1212", "1313"], "enabled": true, "areaCode": "A1", "externalCode": "L12", "level": 1 },
-        { "code": "L13", "shelfModels": ["1212", "1313"], "enabled": true, "areaCode": "A1", "externalCode": "L13", "level": 1 },
-        { "code": "L14", "shelfModels": ["1212", "1313"], "enabled": true, "areaCode": "A1", "externalCode": "L14", "level": 1 }
-    ]
-}
