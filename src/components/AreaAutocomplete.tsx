@@ -4,14 +4,14 @@ import { textFieldSlotProps } from "./props";
 import { useAtomValue } from "jotai";
 import { areasAtom } from "../store";
 import { Controller, useFormContext } from "react-hook-form";
-import type { AreaMapElementModel } from "../types/area";
+import type { Area } from "../types/area";
 import { filterTake } from "../types/utils";
 
 export function AreaAutocomplete(props: { label?: string; required: boolean; }) {
     const [open, setOpen] = useState(false);
     const { control } = useFormContext<{ areaCode: string; }>();
     const [inputValue, setInputValue] = useState('');
-    const [options, setOptions] = useState<AreaMapElementModel[]>([]);
+    const [options, setOptions] = useState<Area[]>([]);
     const areas = useAtomValue(areasAtom);
 
     const doSearch = () => {

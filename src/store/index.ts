@@ -1,6 +1,6 @@
 import { atom } from "jotai";
 import type { TransportTaskMapModel, TransportTaskStatisticalData } from "../types/transportTask";
-import type { AreaMapElementModel } from "../types/area";
+import type { Area } from "../types/area";
 import type { LocationModel, LocationMapElementModel } from "../types/location";
 import type { ShelfMapElementModel } from "../types/shelf";
 import type { InventoryMapModel } from "../types/inventory";
@@ -21,7 +21,7 @@ export const layerCtrlAtom = atom<MapElementLayerCtrl>({
 
 export const scaleAtom = atom<number>(1);
 
-export const areasAtom = atom<AreaMapElementModel[]>([
+export const areasAtom = atom<Area[]>([
     { code: '2002', name: '2002', type: '' },
     { code: '2003', name: '2003', type: '' },
     { code: '2003X', name: '2003X', type: '' },
