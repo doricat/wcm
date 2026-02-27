@@ -154,9 +154,7 @@ export function MapCanvas({ ref }: { ref: React.Ref<{ saveLayout: () => void }>;
                 isDisplayGridGuidelines={true}
                 bounds={{ top: 16, left: 16 }}
                 onClickGroup={e => {
-                    if (selectoRef.current) {
-                        selectoRef.current!.clickTarget(e.inputEvent, e.inputTarget);
-                    }
+                    selectoRef.current!.clickTarget(e.inputEvent, e.inputTarget);
                 }}
                 onRender={e => {
                     e.target.style.cssText += e.cssText;
@@ -188,6 +186,7 @@ export function MapCanvas({ ref }: { ref: React.Ref<{ saveLayout: () => void }>;
                 }}
             />
             <Selecto
+                ref={selectoRef}
                 dragContainer={'.map-canvas'}
                 selectableTargets={['.map-canvas .map-location-box2']}
                 hitRate={0}

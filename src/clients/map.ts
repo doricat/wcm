@@ -1,11 +1,11 @@
-import type { AreaMapElementModel } from "../types/area";
+import type { Area } from "../types/area";
 import type { LocationMapElementModel } from "../types/location";
 import type { ShelfMapElementModel } from "../types/shelf";
 import type { InventoryMapModel } from "../types/inventory";
 import type { TransportTaskMapModel } from "../types/transportTask";
 import { doFetch } from "./helper";
 
-export async function getAreas(): Promise<AreaMapElementModel[]> {
+export async function getAreas(): Promise<Area[]> {
     const url = '/areas.json';
     return await doFetch(url, [], { method: 'get' });
 }

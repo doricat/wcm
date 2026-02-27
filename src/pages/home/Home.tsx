@@ -24,7 +24,7 @@ export function Home() {
             mapH = Math.max(location.y + location.h, mapH);
         }
 
-        setSize([mapW, mapH]);
+        setSize([mapW + 50, mapH + 50]);
 
         setLoading(false);
     };
