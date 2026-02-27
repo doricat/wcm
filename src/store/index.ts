@@ -8,6 +8,7 @@ import { transportTaskStatuses } from "../types/enums";
 import type { MapElementLayerCtrl } from "../types/map";
 import type { Material } from "../types/material";
 import type { Supplier } from "../types/supplier";
+import type { PolygonAnnotation, TextAnnotation } from "../types/annotation";
 
 export const globalAlertAtom = atom<string | null>();
 
@@ -140,3 +141,13 @@ export const exceptionalShelfQtyAtom = atom<number>(get => {
 export const selectedLocationsAtom = atom<string[]>([]);
 
 export const selectedTasksAtom = atom<{ locationCode?: string; taskCode?: string; } | null>(null);
+
+export const polygonAnnotationsAtom = atom<PolygonAnnotation[]>([
+    { id: '0', type: 'area', areaCode: '1007B', x: 33, y: 190, w: 429, h: 116, backgroundColor: 'aliceblue' },
+    { id: '1', type: 'area', areaCode: '23H', x: 1780, y: 920, w: 635, h: 415, backgroundColor: 'aliceblue' }
+]);
+
+export const textAnnotationsAtom = atom<TextAnnotation[]>([
+    { id: '21', content: '1007B', x: 30, y: 275, size: 25, w: 73, h: 38, color: 'blueviolet' },
+    { id: '22', content: '23H', x: 1780, y: 600, size: 315, w: 580, h: 473, color: 'aqua' }
+]);
