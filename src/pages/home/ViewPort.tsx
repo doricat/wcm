@@ -126,7 +126,7 @@ export function ViewPort(props: Props) {
             continue;
         }
 
-        polygonAnnotationElements.push(<div key={getAnnotationElementId(annotation)} className="map-polygon-annotation" style={getPolygonAnnotationStyle(annotation)}></div>);
+        polygonAnnotationElements.push(<div key={getAnnotationElementId(annotation)} className="map-polygon-annotation" style={getPolygonAnnotationStyle(annotation)} data-area-code={annotation.type === 'area' ? annotation.areaCode! : null}></div>);
     }
 
     const textAnnotationElements = [];
