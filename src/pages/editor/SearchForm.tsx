@@ -10,7 +10,6 @@ import type { LocationModel } from "../../types/location";
 const schema = yup.object({
     areaCode: yup.string().max(50).default(''),
     locationCode: yup.string().max(50).default('')
-
 }).required();
 
 type FormValues = yup.InferType<typeof schema>;
@@ -41,5 +40,5 @@ export function SearchForm(props: { locations: LocationModel[]; notify: (areaCod
                 </Stack>
             </Box>
         </FormProvider>
-    )
+    );
 }

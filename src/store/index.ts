@@ -144,10 +144,12 @@ export const selectedTasksAtom = atom<{ locationCode?: string; taskCode?: string
 
 export const polygonAnnotationsAtom = atom<PolygonAnnotation[]>([
     { id: '0', type: 'area', areaCode: '1007B', x: 33, y: 190, w: 429, h: 116, backgroundColor: 'aliceblue' },
-    { id: '1', type: 'area', areaCode: '23H', x: 1780, y: 920, w: 635, h: 415, backgroundColor: 'aliceblue' }
+    { id: '1', type: 'area', areaCode: '23H', x: 1780, y: 920, w: 635, h: 415, backgroundColor: 'aliceblue' },
+    { id: '2', type: null, areaCode: null, x: 33, y: 320, w: 2380, h: 100, backgroundColor: 'beige' }
 ]);
 
 export const textAnnotationsAtom = atom<TextAnnotation[]>([
-    { id: '21', content: '1007B', x: 30, y: 275, size: 25, w: 73, h: 38, color: 'blueviolet' },
-    { id: '22', content: '23H', x: 1780, y: 600, size: 315, w: 580, h: 473, color: 'aqua' }
+    { id: '21', content: '1 0 0 7 B', x: 80, y: 210, size: 80, w: 73, h: 38, color: 'blueviolet' },
+    { id: '22', content: '23H', x: 1820, y: 970, size: 315, w: 580, h: 473, color: 'aqua' },
+    { id: '23', content: '通道', x: 40, y: 350, size: 25, w: 73, h: 38, color: 'black' }
 ]);

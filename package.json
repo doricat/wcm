@@ -24,6 +24,7 @@
     "notistack": "^3.0.2",
     "perfect-arrows": "^0.3.7",
     "react": "^19.2.0",
+    "react-contexify": "^6.0.0",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^19.2.0",
