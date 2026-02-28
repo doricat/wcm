@@ -15,3 +15,8 @@ export function generateBatchNo() {
 export function getDisplayName(code: string, name: string | null | undefined) {
     return name ? `${code}: ${name}` : code;
 }
+
+let i = 100;
+export function generateId() {
+    return (i++).toString();
+}

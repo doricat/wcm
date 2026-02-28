@@ -11,6 +11,8 @@ import { enqueueSnackbar } from "notistack";
 import { useNavigate } from "react-router";
 import { Menu, Item, useContextMenu, type ItemParams, type TriggerEvent } from "react-contexify";
 import { getAnnotationElementId, getPolygonAnnotationStyle, getTextAnnotationStyle } from "../../types/annotation";
+import { useDialog } from "../../hooks/useDialog";
+import { AddAnnotationDialog } from "./AddAnnotationDialog";
 
 const menuId = 'def-menu';
 
@@ -52,14 +54,15 @@ export function MapCanvas({ ref }: { ref: React.Ref<{ saveLayout: () => void }>;
     const [mapLocations, setMapLocations] = useAtom(mapLocationsAtom);
     const shelves = useAtomValue(shelvesAtom);
     const inventories = useAtomValue(inventoriesAtom);
-    const polygonAnnotations = useAtomValue(polygonAnnotationsAtom);
-    const textAnnotations = useAtomValue(textAnnotationsAtom);
+    const [polygonAnnotations, setPolygonAnnotations] = useAtom(polygonAnnotationsAtom);
+    const [textAnnotations, setTextAnnotations] = useAtom(textAnnotationsAtom);
     const [targets, setTargets] = useState<Array<HTMLElement | SVGElement>>([]);
     const moveableRef = useRef<Moveable>(null);
     const selectoRef = useRef<Selecto>(null);
     const [size, setSize] = useState<{ w: number; h: number; init: boolean; }>({ w: 500, h: 500, init: true });
     const [contextMenuItemState, setContextMenuItemState] = useState<{ add: boolean; remove: boolean; }>({ add: false, remove: true });
     const navigate = useNavigate();
+    const dialog = useDialog();
 
     const [, drop] = useDrop(() => ({
         accept: 'location',
@@ -164,12 +167,27 @@ export function MapCanvas({ ref }: { ref: React.Ref<{ saveLayout: () => void }>;
         }
     };
 
-    const handleAddAnnotation = (evt: ItemParams<TriggerEvent, undefined>) => {
-
+    const handleAddAnnotation = async (evt: ItemParams<TriggerEvent, undefined>) => {
+        await dialog.open(AddAnnotationDialog, { x: evt.triggerEvent.offsetX, y: evt.triggerEvent.offsetY });
     };
 
-    const handleRemoveAnnotation = (evt: ItemParams<TriggerEvent, undefined>) => {
-
+    const handleRemoveAnnotation = async (evt: ItemParams<TriggerEvent, undefined>) => {
+        if (evt.triggerEvent.target) {
+            const annotationId = (evt.triggerEvent.target as HTMLElement).getAttribute('data-annotation-id');
+            if (annotationId) {
+                const b = await dialog.confirm(`确定移除标记？`, { severity: 'warning' });
+                if (b) {
+                    const className = (evt.triggerEvent.target as HTMLElement).className;
+                    if (className.includes('map-polygon-annotation')) {
+                        const arr = polygonAnnotations.filter(x => x.id !== annotationId);
+                        setPolygonAnnotations(arr);
+                    } else if (className.includes('map-text-annotation')) {
+                        const arr = textAnnotations.filter(x => x.id !== annotationId);
+                        setTextAnnotations(arr);
+                    }
+                }
+            }
+        }
     };
 
     const locationElements = [];
@@ -191,7 +209,7 @@ export function MapCanvas({ ref }: { ref: React.Ref<{ saveLayout: () => void }>;
 
     const polygonAnnotationElements = [];
     for (const annotation of polygonAnnotations) {
-        polygonAnnotationElements.push(<div key={getAnnotationElementId(annotation)} className="map-polygon-annotation" style={getPolygonAnnotationStyle(annotation)}></div>);
+        polygonAnnotationElements.push(<div key={getAnnotationElementId(annotation)} className="map-polygon-annotation" style={getPolygonAnnotationStyle(annotation)} data-annotation-id={annotation.id}></div>);
 
         canvasW = Math.max(annotation.x + annotation.w, canvasW);
         canvasH = Math.max(annotation.y + annotation.h, canvasH);
@@ -199,7 +217,7 @@ export function MapCanvas({ ref }: { ref: React.Ref<{ saveLayout: () => void }>;
 
     const textAnnotationElements = [];
     for (const annotation of textAnnotations) {
-        textAnnotationElements.push(<p key={getAnnotationElementId(annotation)} className="map-text-annotation" style={getTextAnnotationStyle(annotation)}>{annotation.content}</p>);
+        textAnnotationElements.push(<p key={getAnnotationElementId(annotation)} className="map-text-annotation" style={getTextAnnotationStyle(annotation)} data-annotation-id={annotation.id}>{annotation.content}</p>);
 
         canvasW = Math.max(annotation.x + annotation.w, canvasW);
         canvasH = Math.max(annotation.y + annotation.h, canvasH);
