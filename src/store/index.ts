@@ -148,6 +148,6 @@ export const polygonAnnotationsAtom = atom<PolygonAnnotation[]>([
 ]);
 
 export const textAnnotationsAtom = atom<TextAnnotation[]>([
-    { id: '21', content: '1007B', x: 30, y: 275, size: 25, w: 73, h: 38, color: 'blueviolet' },
-    { id: '22', content: '23H', x: 1780, y: 600, size: 315, w: 580, h: 473, color: 'aqua' }
+    { id: '21', content: '1 0 0 7 B', x: 80, y: 210, size: 80, w: 73, h: 38, color: 'blueviolet' },
+    { id: '22', content: '23H', x: 1820, y: 970, size: 315, w: 580, h: 473, color: 'aqua' }
 ]);

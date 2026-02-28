@@ -39,6 +39,8 @@
 .map-text-annotation {
   z-index: 2;
   position: absolute;
+  margin: 0;
+  line-height: 1;
 }
 
 .animated-arrow {

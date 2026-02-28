@@ -1,6 +1,6 @@
 import { useAtom, useAtomValue } from "jotai";
 import { useDrop } from "react-dnd";
-import { inventoriesAtom, mapLocationsAtom, shelvesAtom } from "../../store";
+import { inventoriesAtom, mapLocationsAtom, polygonAnnotationsAtom, shelvesAtom, textAnnotationsAtom } from "../../store";
 import type { InventoryMapModel } from "../../types/inventory";
 import { getLocationElementId, type LocationModel } from "../../types/location";
 import { LocationMapElement } from "../../components/LocationMapElement";
@@ -9,6 +9,10 @@ import Selecto from "react-selecto";
 import Moveable from "react-moveable";
 import { enqueueSnackbar } from "notistack";
 import { useNavigate } from "react-router";
+import { Menu, Item, useContextMenu, type ItemParams, type TriggerEvent } from "react-contexify";
+import { getAnnotationElementId, getPolygonAnnotationStyle, getTextAnnotationStyle } from "../../types/annotation";
+
+const menuId = 'def-menu';
 
 function getOffset(element: HTMLDivElement) {
     const style = window.getComputedStyle(element);
@@ -48,10 +52,13 @@ export function MapCanvas({ ref }: { ref: React.Ref<{ saveLayout: () => void }>;
     const [mapLocations, setMapLocations] = useAtom(mapLocationsAtom);
     const shelves = useAtomValue(shelvesAtom);
     const inventories = useAtomValue(inventoriesAtom);
+    const polygonAnnotations = useAtomValue(polygonAnnotationsAtom);
+    const textAnnotations = useAtomValue(textAnnotationsAtom);
     const [targets, setTargets] = useState<Array<HTMLElement | SVGElement>>([]);
     const moveableRef = useRef<Moveable>(null);
     const selectoRef = useRef<Selecto>(null);
     const [size, setSize] = useState<{ w: number; h: number; init: boolean; }>({ w: 500, h: 500, init: true });
+    const [contextMenuItemState, setContextMenuItemState] = useState<{ add: boolean; remove: boolean; }>({ add: false, remove: true });
     const navigate = useNavigate();
 
     const [, drop] = useDrop(() => ({
@@ -121,6 +128,50 @@ export function MapCanvas({ ref }: { ref: React.Ref<{ saveLayout: () => void }>;
         saveLayout
     }));
 
+    const { show } = useContextMenu({
+        id: menuId
+    });
+
+    const handleContextMenu = (event: React.MouseEvent) => {
+        if (!event.target) {
+            return;
+        }
+
+        let state = { add: false, remove: true };
+        let b = true;
+        const tagName = (event.target as HTMLElement).tagName;
+        do {
+            if (tagName === 'DIV') {
+                const element = event.target as HTMLDivElement;
+                if (element.className === 'map-canvas') {
+                    break;
+                }
+
+                const locationCode = element.getAttribute('data-location-code');
+                if (locationCode) {
+                    b = false;
+                    break;
+                }
+            }
+
+            state = { add: true, remove: false };
+            // eslint-disable-next-line no-constant-condition
+        } while (false);
+
+        if (b) {
+            setContextMenuItemState(state);
+            show({ event });
+        }
+    };
+
+    const handleAddAnnotation = (evt: ItemParams<TriggerEvent, undefined>) => {
+
+    };
+
+    const handleRemoveAnnotation = (evt: ItemParams<TriggerEvent, undefined>) => {
+
+    };
+
     const locationElements = [];
     let canvasW = 0;
     let canvasH = 0;
@@ -138,8 +189,24 @@ export function MapCanvas({ ref }: { ref: React.Ref<{ saveLayout: () => void }>;
         canvasH = Math.max(location.y + location.h, canvasH);
     }
 
+    const polygonAnnotationElements = [];
+    for (const annotation of polygonAnnotations) {
+        polygonAnnotationElements.push(<div key={getAnnotationElementId(annotation)} className="map-polygon-annotation" style={getPolygonAnnotationStyle(annotation)}></div>);
+
+        canvasW = Math.max(annotation.x + annotation.w, canvasW);
+        canvasH = Math.max(annotation.y + annotation.h, canvasH);
+    }
+
+    const textAnnotationElements = [];
+    for (const annotation of textAnnotations) {
+        textAnnotationElements.push(<p key={getAnnotationElementId(annotation)} className="map-text-annotation" style={getTextAnnotationStyle(annotation)}>{annotation.content}</p>);
+
+        canvasW = Math.max(annotation.x + annotation.w, canvasW);
+        canvasH = Math.max(annotation.y + annotation.h, canvasH);
+    }
+
     if (size.init) {
-        setSize({ w: canvasW, h: canvasH, init: false });
+        setSize({ w: canvasW + 100, h: canvasH + 100, init: false });
     }
 
     return (
@@ -217,9 +284,18 @@ export function MapCanvas({ ref }: { ref: React.Ref<{ saveLayout: () => void }>;
                     setTargets(e.selected);
                 }}
             />
-            <div className="map-canvas" ref={setRef} style={{ width: `${size.w}px`, height: `${size.h}px`, margin: '16px', userSelect: 'none' }}>
+            <div className="map-canvas" ref={setRef} style={{ width: `${size.w}px`, height: `${size.h}px`, margin: '16px', userSelect: 'none' }} onContextMenu={handleContextMenu}>
+                {polygonAnnotationElements}
+                {textAnnotationElements}
                 {locationElements}
             </div>
+
+            <Menu id={menuId} animation="scale">
+                <Item id="add" disabled={contextMenuItemState.add} onClick={handleAddAnnotation}>添加标注</Item>
+                <Item id="remove" disabled={contextMenuItemState.remove} onClick={handleRemoveAnnotation}>移除标注</Item>
+            </Menu>
+
+            <div style={{}}></div>
         </div>
     );
 }
