@@ -20,6 +20,8 @@ export const layerCtrlAtom = atom<MapElementLayerCtrl>({
     transportTask: false
 });
 
+export const mapSizeAtom = atom<{ w: number; h: number; }>({ w: 2415 + 50, h: 1524 + 50 });
+
 export const scaleAtom = atom<number>(1);
 
 export const areasAtom = atom<Area[]>([
