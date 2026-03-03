@@ -23,9 +23,12 @@
   border-width: 3px;
 }
 
+.map-element {
+  position: absolute;
+}
+
 .map-location-box2 {
   z-index: 3;
-  position: absolute;
   align-content: center;
   opacity: 0.8;
   cursor: move;
@@ -33,12 +36,10 @@
 
 .map-polygon-annotation {
   z-index: 1;
-  position: absolute;
 }
 
 .map-text-annotation {
   z-index: 2;
-  position: absolute;
   margin: 0;
   line-height: 1;
 }

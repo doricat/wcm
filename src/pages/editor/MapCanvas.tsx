@@ -1,6 +1,6 @@
-import { useAtom, useAtomValue } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { useDrop } from "react-dnd";
-import { inventoriesAtom, mapLocationsAtom, polygonAnnotationsAtom, shelvesAtom, textAnnotationsAtom } from "../../store";
+import { inventoriesAtom, mapLocationsAtom, mapSizeAtom, polygonAnnotationsAtom, shelvesAtom, textAnnotationsAtom } from "../../store";
 import type { InventoryMapModel } from "../../types/inventory";
 import { getLocationElementId, type LocationModel } from "../../types/location";
 import { LocationMapElement } from "../../components/LocationMapElement";
@@ -13,24 +13,27 @@ import { Menu, Item, useContextMenu, type ItemParams, type TriggerEvent } from "
 import { getAnnotationElementId, getPolygonAnnotationStyle, getTextAnnotationStyle } from "../../types/annotation";
 import { useDialog } from "../../hooks/useDialog";
 import { AddAnnotationDialog } from "./AddAnnotationDialog";
+import { TextAnnotationPropDialog } from "./TextAnnotationPropDialog";
+import { PolygonAnnotationPropDialog } from "./PolygonAnnotationPropDialog";
 
 const menuId = 'def-menu';
 
-function getOffset(element: HTMLDivElement) {
+function getOffsetAndSize(element: HTMLElement) {
     const style = window.getComputedStyle(element);
+    let x = 0;
+    let y = 0;
+
     const transform = style.transform || 'none';
-    if (transform === 'none') {
-        return;
-    }
+    if (transform !== 'none') {
+        const matrixStr = transform.match(/matrix(3d)?\((.*?)\)/);
+        if (!matrixStr) {
+            return;
+        }
 
-    const matrixStr = transform.match(/matrix(3d)?\((.*?)\)/);
-    if (!matrixStr) {
-        return;
+        const matrixValues = matrixStr[2].split(/\s*,\s*/).map(Number);
+        x = matrixValues[4];
+        y = matrixValues[5];
     }
-
-    const matrixValues = matrixStr[2].split(/\s*,\s*/).map(Number);
-    let x = matrixValues[4];
-    let y = matrixValues[5];
 
     const translate = style.translate || 'none';
     if (translate !== 'none') {
@@ -45,12 +48,19 @@ function getOffset(element: HTMLDivElement) {
 
     x = Math.round(x);
     y = Math.round(y);
+    const w = Math.round(Number.parseFloat(style.width.replace('px', '')));
+    const h = Math.round(Number.parseFloat(style.height.replace('px', '')));
 
-    return { x, y };
+    return { x, y, w, h };
+}
+
+function checkAllowResize(elements: (HTMLElement | SVGElement)[]) {
+    return elements.length === 1 && elements[0].tagName === 'DIV' && elements[0].getAttribute('data-annotation-id') != null;
 }
 
 export function MapCanvas({ ref }: { ref: React.Ref<{ saveLayout: () => void }>; }) {
     const canvasRef = useRef<HTMLDivElement>(null);
+    const setMapSize = useSetAtom(mapSizeAtom);
     const [mapLocations, setMapLocations] = useAtom(mapLocationsAtom);
     const shelves = useAtomValue(shelvesAtom);
     const inventories = useAtomValue(inventoriesAtom);
@@ -63,6 +73,7 @@ export function MapCanvas({ ref }: { ref: React.Ref<{ saveLayout: () => void }>;
     const [contextMenuItemState, setContextMenuItemState] = useState<{ add: boolean; remove: boolean; }>({ add: false, remove: true });
     const navigate = useNavigate();
     const dialog = useDialog();
+    const [editMode, setEditMode] = useState<'move-only' | 'move-resize'>('move-only');
 
     const [, drop] = useDrop(() => ({
         accept: 'location',
@@ -101,28 +112,73 @@ export function MapCanvas({ ref }: { ref: React.Ref<{ saveLayout: () => void }>;
     }, [drop]);
 
     const saveLayout = () => {
-        const elements = document.querySelectorAll('.map-canvas .map-location-box2');
+        let w = 0;
+        let h = 0;
+
+        const elements = document.querySelectorAll('.map-canvas .map-element');
         for (const item of elements) {
-            const offset = getOffset(item as HTMLDivElement);
-            if (!offset) {
+            const rect = getOffsetAndSize(item as HTMLElement);
+            if (!rect) {
                 continue;
             }
 
-            const code = item.getAttribute('data-location-code');
-            if (code) {
-                const index = mapLocations.findIndex(x => x.code === code);
-                if (index >= 0) {
-                    const location = mapLocations[index];
-                    mapLocations.splice(index, 1);
-                    mapLocations.push({ ...location, x: offset.x, y: offset.y });
+            do {
+                const locationCode = item.getAttribute('data-location-code');
+                if (locationCode) {
+                    const index = mapLocations.findIndex(x => x.code === locationCode);
+                    if (index >= 0) {
+                        const location = mapLocations[index];
+                        mapLocations.splice(index, 1);
+                        mapLocations.push({ ...location, x: rect.x, y: rect.y });
+                    }
 
-                    (item as HTMLDivElement).style.transform = 'none';
+                    break;
                 }
-            }
+
+                const id = item.getAttribute('data-annotation-id');
+                if (id) {
+                    if (item.tagName === 'DIV') {
+                        const index = polygonAnnotations.findIndex(x => x.id === id);
+                        if (index >= 0) {
+                            const polygon = polygonAnnotations[index];
+                            polygonAnnotations.splice(index, 1);
+                            polygonAnnotations.push({ ...polygon, backgroundColor: (item as HTMLParagraphElement).style.backgroundColor, x: rect.x, y: rect.y, w: rect.w, h: rect.h });
+                        }
+
+                        break;
+                    }
+
+                    if (item.tagName === 'P') {
+                        const index = textAnnotations.findIndex(x => x.id === id);
+                        if (index >= 0) {
+                            const text = textAnnotations[index];
+                            textAnnotations.splice(index, 1);
+                            textAnnotations.push({ ...text, size: Number.parseInt((item as HTMLParagraphElement).style.fontSize.replace('px', '')), color: (item as HTMLParagraphElement).style.color, x: rect.x, y: rect.y, w: rect.w, h: rect.h });
+                        }
+
+                        break;
+                    }
+                }
+
+                // eslint-disable-next-line no-constant-condition
+            } while (false);
+
+            (item as HTMLElement).style.transform = 'none';
+
+            w = Math.max(rect.x + rect.w, w);
+            h = Math.max(rect.y + rect.h, h);
         }
 
+        w += 50;
+        h += 50;
+
+        if (w > 50 && h > 50) {
+            setMapSize({ w, h });
+        }
+
+        setPolygonAnnotations([...polygonAnnotations]);
+        setTextAnnotations([...textAnnotations]);
         setMapLocations([...mapLocations]);
-        setTargets([]);
         enqueueSnackbar('保存成功', { variant: 'success' });
         navigate('/');
     };
@@ -164,6 +220,7 @@ export function MapCanvas({ ref }: { ref: React.Ref<{ saveLayout: () => void }>;
         if (b) {
             setContextMenuItemState(state);
             show({ event });
+            setTargets([]);
         }
     };
 
@@ -190,6 +247,21 @@ export function MapCanvas({ ref }: { ref: React.Ref<{ saveLayout: () => void }>;
         }
     };
 
+    const openPropDialog = async (evt: ItemParams<TriggerEvent, undefined>) => {
+        if (evt.triggerEvent.target) {
+            const annotationId = (evt.triggerEvent.target as HTMLElement).getAttribute('data-annotation-id');
+            if (annotationId) {
+                const className = (evt.triggerEvent.target as HTMLElement).className;
+                if (className.includes('map-polygon-annotation')) {
+                    const annotation = polygonAnnotations.find(x => x.id === annotationId);
+                    await dialog.open(PolygonAnnotationPropDialog, { element: evt.triggerEvent.target as HTMLDivElement, areaCode: annotation ? annotation.areaCode : null });
+                } else if (className.includes('map-text-annotation')) {
+                    await dialog.open(TextAnnotationPropDialog, { element: evt.triggerEvent.target as HTMLParagraphElement });
+                }
+            }
+        }
+    };
+
     const locationElements = [];
     let canvasW = 0;
     let canvasH = 0;
@@ -201,7 +273,7 @@ export function MapCanvas({ ref }: { ref: React.Ref<{ saveLayout: () => void }>;
             shelfInventories = inventories.filter(x => x.shelfCode == shelf.code);
         }
 
-        locationElements.push(<LocationMapElement key={getLocationElementId(location)} location={location} shelf={shelf} inventories={shelfInventories} arriveTasks={[]} onlyShelf={false} selected={false} className="map-location-box2" />);
+        locationElements.push(<LocationMapElement key={getLocationElementId(location)} location={location} shelf={shelf} inventories={shelfInventories} arriveTasks={[]} onlyShelf={false} selected={false} className="map-location-box2 map-element" />);
 
         canvasW = Math.max(location.x + location.w, canvasW);
         canvasH = Math.max(location.y + location.h, canvasH);
@@ -209,7 +281,7 @@ export function MapCanvas({ ref }: { ref: React.Ref<{ saveLayout: () => void }>;
 
     const polygonAnnotationElements = [];
     for (const annotation of polygonAnnotations) {
-        polygonAnnotationElements.push(<div key={getAnnotationElementId(annotation)} className="map-polygon-annotation" style={getPolygonAnnotationStyle(annotation)} data-annotation-id={annotation.id}></div>);
+        polygonAnnotationElements.push(<div key={getAnnotationElementId(annotation)} className="map-polygon-annotation map-element" style={getPolygonAnnotationStyle(annotation)} data-annotation-id={annotation.id}></div>);
 
         canvasW = Math.max(annotation.x + annotation.w, canvasW);
         canvasH = Math.max(annotation.y + annotation.h, canvasH);
@@ -217,7 +289,7 @@ export function MapCanvas({ ref }: { ref: React.Ref<{ saveLayout: () => void }>;
 
     const textAnnotationElements = [];
     for (const annotation of textAnnotations) {
-        textAnnotationElements.push(<p key={getAnnotationElementId(annotation)} className="map-text-annotation" style={getTextAnnotationStyle(annotation)} data-annotation-id={annotation.id}>{annotation.content}</p>);
+        textAnnotationElements.push(<p key={getAnnotationElementId(annotation)} className="map-text-annotation map-element" style={getTextAnnotationStyle(annotation)} data-annotation-id={annotation.id}>{annotation.content}</p>);
 
         canvasW = Math.max(annotation.x + annotation.w, canvasW);
         canvasH = Math.max(annotation.y + annotation.h, canvasH);
@@ -238,15 +310,16 @@ export function MapCanvas({ ref }: { ref: React.Ref<{ saveLayout: () => void }>;
                 snapGridHeight={5}
                 isDisplayGridGuidelines={true}
                 bounds={{ top: 16, left: 16 }}
+                resizable={editMode === 'move-resize'}
                 onClickGroup={e => {
                     selectoRef.current!.clickTarget(e.inputEvent, e.inputTarget);
                 }}
                 onRender={e => {
                     e.target.style.cssText += e.cssText;
-                    const offset = getOffset(e.target as HTMLDivElement);
-                    if (offset) {
-                        const w = Math.max(offset.x + 100, size.w);
-                        const h = Math.max(offset.y + 100, size.h);
+                    const rect = getOffsetAndSize(e.target as HTMLDivElement);
+                    if (rect) {
+                        const w = Math.max(rect.x + rect.w, size.w);
+                        const h = Math.max(rect.y + rect.h, size.h);
 
                         if (w > size.w || h > size.h) {
                             setSize({ w, h, init: false });
@@ -258,11 +331,11 @@ export function MapCanvas({ ref }: { ref: React.Ref<{ saveLayout: () => void }>;
                         ev.target.style.cssText += ev.cssText;
                     });
 
-                    const offset = getOffset(e.currentTarget.controlBox as HTMLDivElement);
-                    if (offset) {
+                    const rect = getOffsetAndSize(e.currentTarget.controlBox as HTMLDivElement);
+                    if (rect) {
                         const { width, height } = e.currentTarget.areaElement.style;
-                        const w = Math.max(offset.x + Number.parseInt(width.replace('px', '')), size.w);
-                        const h = Math.max(offset.y + Number.parseInt(height.replace('px', '')), size.h);
+                        const w = Math.max(rect.x + Number.parseInt(width.replace('px', '')), size.w);
+                        const h = Math.max(rect.y + Number.parseInt(height.replace('px', '')), size.h);
 
                         if (w > size.w || h > size.h) {
                             setSize({ w, h, init: false });
@@ -273,7 +346,7 @@ export function MapCanvas({ ref }: { ref: React.Ref<{ saveLayout: () => void }>;
             <Selecto
                 ref={selectoRef}
                 dragContainer={'.map-canvas'}
-                selectableTargets={['.map-canvas .map-location-box2']}
+                selectableTargets={['.map-canvas .map-element']}
                 hitRate={0}
                 selectByClick={true}
                 selectFromInside={false}
@@ -291,6 +364,7 @@ export function MapCanvas({ ref }: { ref: React.Ref<{ saveLayout: () => void }>;
                         return;
                     }
                     setTargets(e.selected);
+                    setEditMode(checkAllowResize(e.selected) ? 'move-resize' : 'move-only');
                 }}
                 onSelectEnd={e => {
                     if (e.isDragStartEnd && moveableRef.current) {
@@ -300,6 +374,7 @@ export function MapCanvas({ ref }: { ref: React.Ref<{ saveLayout: () => void }>;
                         });
                     }
                     setTargets(e.selected);
+                    setEditMode(checkAllowResize(e.selected) ? 'move-resize' : 'move-only');
                 }}
             />
             <div className="map-canvas" ref={setRef} style={{ width: `${size.w}px`, height: `${size.h}px`, margin: '16px', userSelect: 'none' }} onContextMenu={handleContextMenu}>
@@ -311,9 +386,8 @@ export function MapCanvas({ ref }: { ref: React.Ref<{ saveLayout: () => void }>;
             <Menu id={menuId} animation="scale">
                 <Item id="add" disabled={contextMenuItemState.add} onClick={handleAddAnnotation}>添加标注</Item>
                 <Item id="remove" disabled={contextMenuItemState.remove} onClick={handleRemoveAnnotation}>移除标注</Item>
+                <Item id="prop" disabled={contextMenuItemState.remove} onClick={openPropDialog}>属性</Item>
             </Menu>
-
-            <div style={{}}></div>
         </div>
     );
 }

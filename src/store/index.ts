@@ -20,6 +20,8 @@ export const layerCtrlAtom = atom<MapElementLayerCtrl>({
     transportTask: false
 });
 
+export const mapSizeAtom = atom<{ w: number; h: number; }>({ w: 2639, h: 1584 });
+
 export const scaleAtom = atom<number>(1);
 
 export const areasAtom = atom<Area[]>([
@@ -46,12 +48,12 @@ export const mapLocationsAtom = atom<LocationMapElementModel[]>([
     { code: 'B012', shelfModels: ['1212', '1313'], enabled: true, areaCode: '1007B', externalCode: '', level: 1, x: 143, y: 200, w: 100, h: 100 },
     { code: 'B013', shelfModels: ['1212', '1313'], enabled: true, areaCode: '1007B', externalCode: '', level: 1, x: 248, y: 199, w: 100, h: 100 },
     { code: 'B014', shelfModels: ['1212', '1313'], enabled: true, areaCode: '1007B', externalCode: '', level: 1, x: 353, y: 199, w: 100, h: 100 },
-    { code: 'A006', shelfModels: ['1212', '1313'], enabled: true, areaCode: '1007', externalCode: '', level: 1, x: 353, y: 444, w: 100, h: 100 },
+    { code: 'A006', shelfModels: ['1212', '1313'], enabled: true, areaCode: '1007', externalCode: '', level: 1, x: 354, y: 444, w: 100, h: 100 },
     { code: 'A005', shelfModels: ['1212', '1313'], enabled: true, areaCode: '1002', externalCode: '', level: 1, x: 538, y: 201, w: 100, h: 100 },
-    { code: 'B010', shelfModels: ['1212', '1313'], enabled: true, areaCode: '1001B', externalCode: '', level: 1, x: 718, y: 201, w: 100, h: 100 },
+    { code: 'B010', shelfModels: ['1212', '1313'], enabled: true, areaCode: '1001B', externalCode: '', level: 1, x: 714, y: 201, w: 100, h: 100 },
     { code: 'B009', shelfModels: ['1212', '1313'], enabled: true, areaCode: '1001B', externalCode: '', level: 1, x: 943, y: 199, w: 100, h: 100 },
     { code: 'B008', shelfModels: ['1212', '1313'], enabled: true, areaCode: '1001B', externalCode: '', level: 1, x: 943, y: 59, w: 100, h: 100 },
-    { code: 'A004', shelfModels: ['1212', '1313'], enabled: true, areaCode: '1001', externalCode: '', level: 1, x: 838, y: 59, w: 100, h: 100 },
+    { code: 'A004', shelfModels: ['1212', '1313'], enabled: true, areaCode: '1001', externalCode: '', level: 1, x: 829, y: 54, w: 100, h: 100 },
     { code: '2003X', shelfModels: ['1212', '1313'], enabled: false, areaCode: '2003X', externalCode: '', level: 1, x: 1179, y: 199, w: 100, h: 100 },
     { code: 'A003', shelfModels: ['1212', '1313'], enabled: true, areaCode: '2003X', externalCode: '', level: 1, x: 1179, y: 304, w: 100, h: 100 },
     { code: 'A002', shelfModels: ['1212', '1313'], enabled: true, areaCode: '2003', externalCode: '', level: 1, x: 1304, y: 199, w: 100, h: 100 },
@@ -60,8 +62,8 @@ export const mapLocationsAtom = atom<LocationMapElementModel[]>([
     { code: 'B002', shelfModels: ['1212', '1313'], enabled: true, areaCode: '2002B', externalCode: '', level: 1, x: 1964, y: 199, w: 100, h: 100 },
     { code: 'B003', shelfModels: ['1212', '1313'], enabled: true, areaCode: '2002B', externalCode: '', level: 1, x: 2069, y: 199, w: 100, h: 100 },
     { code: 'B004', shelfModels: ['1212', '1313'], enabled: true, areaCode: '2002B', externalCode: '', level: 1, x: 2174, y: 199, w: 100, h: 100 },
-    { code: 'B006', shelfModels: ['1212', '1313'], enabled: true, areaCode: '2003B', externalCode: '', level: 1, x: 1859, y: 424, w: 100, h: 100 },
-    { code: 'B007', shelfModels: ['1212', '1313'], enabled: true, areaCode: '2003B', externalCode: '', level: 1, x: 1964, y: 424, w: 100, h: 100 },
+    { code: 'B006', shelfModels: ['1212', '1313'], enabled: true, areaCode: '2003B', externalCode: '', level: 1, x: 1859, y: 444, w: 100, h: 100 },
+    { code: 'B007', shelfModels: ['1212', '1313'], enabled: true, areaCode: '2003B', externalCode: '', level: 1, x: 1964, y: 444, w: 100, h: 100 },
     { code: 'C013', shelfModels: ['1212', '1313'], enabled: true, areaCode: '23H', externalCode: '', level: 1, x: 1784, y: 924, w: 100, h: 100 },
     { code: 'C014', shelfModels: ['1212', '1313'], enabled: true, areaCode: '23H', externalCode: '', level: 1, x: 1889, y: 924, w: 100, h: 100 },
     { code: 'C015', shelfModels: ['1212', '1313'], enabled: true, areaCode: '23H', externalCode: '', level: 1, x: 1994, y: 924, w: 100, h: 100 },
@@ -143,13 +145,40 @@ export const selectedLocationsAtom = atom<string[]>([]);
 export const selectedTasksAtom = atom<{ locationCode?: string; taskCode?: string; } | null>(null);
 
 export const polygonAnnotationsAtom = atom<PolygonAnnotation[]>([
-    { id: '0', type: 'area', areaCode: '1007B', x: 33, y: 190, w: 429, h: 116, backgroundColor: 'aliceblue' },
-    { id: '1', type: 'area', areaCode: '23H', x: 1780, y: 920, w: 635, h: 415, backgroundColor: 'aliceblue' },
-    { id: '2', type: null, areaCode: null, x: 33, y: 320, w: 2380, h: 100, backgroundColor: 'beige' }
+    { id: '0', type: 'area', areaCode: '1007B', x: 29, y: 190, w: 433, h: 119, backgroundColor: 'aliceblue' },
+    { id: '1', type: 'area', areaCode: '23H', x: 1774, y: 914, w: 645, h: 425, backgroundColor: 'aliceblue' },
+    { id: '2', type: null, areaCode: null, x: 29, y: 320, w: 2390, h: 100, backgroundColor: 'beige' },
+    { id: '100', type: 'area', areaCode: '1007', x: 344, y: 434, w: 120, h: 120, backgroundColor: 'aliceblue' },
+    { id: '102', type: 'area', areaCode: '1002', x: 529, y: 194, w: 120, h: 115, backgroundColor: 'aliceblue' },
+    { id: '104', type: 'area', areaCode: '1001B', x: 704, y: 194, w: 120, h: 115, backgroundColor: 'aliceblue' },
+    { id: '105', type: 'area', areaCode: '1001B', x: 934, y: 49, w: 120, h: 260, backgroundColor: 'aliceblue' },
+    { id: '107', type: 'area', areaCode: '1001', x: 824, y: 49, w: 110, h: 110, backgroundColor: 'aliceblue' },
+    { id: '109', type: 'area', areaCode: '2003X', x: 1169, y: 189, w: 120, h: 220, backgroundColor: 'aliceblue' },
+    { id: '111', type: 'area', areaCode: '2003', x: 1294, y: 189, w: 120, h: 120, backgroundColor: 'aliceblue' },
+    { id: '113', type: 'area', areaCode: '2002', x: 1494, y: 189, w: 120, h: 120, backgroundColor: 'aliceblue' },
+    { id: '115', type: 'area', areaCode: '2002B', x: 1679, y: 189, w: 605, h: 120, backgroundColor: 'aliceblue' },
+    { id: '117', type: 'area', areaCode: '2003B', x: 1849, y: 434, w: 225, h: 120, backgroundColor: 'aliceblue' },
+    { id: '119', type: 'area', areaCode: '21D', x: 1889, y: 1414, w: 530, h: 120, backgroundColor: 'aliceblue' },
+    { id: '121', type: 'area', areaCode: '22J', x: 1779, y: 1414, w: 100, h: 120, backgroundColor: 'aliceblue' },
+    { id: '124', type: null, areaCode: null, x: 2479, y: 319, w: 110, h: 1215, backgroundColor: 'rgb(245, 245, 220)' }
 ]);
 
 export const textAnnotationsAtom = atom<TextAnnotation[]>([
-    { id: '21', content: '1 0 0 7 B', x: 80, y: 210, size: 80, w: 73, h: 38, color: 'blueviolet' },
-    { id: '22', content: '23H', x: 1820, y: 970, size: 315, w: 580, h: 473, color: 'aqua' },
-    { id: '23', content: '通道', x: 40, y: 350, size: 25, w: 73, h: 38, color: 'black' }
+    { id: '21', content: '1 0 0 7 B', x: 80, y: 210, size: 80, w: 310, h: 80, color: 'blueviolet' },
+    { id: '22', content: '23H', x: 1820, y: 970, size: 315, w: 579, h: 315, color: 'aqua' },
+    { id: '23', content: '通道', x: 40, y: 349, size: 50, w: 100, h: 50, color: 'rgb(85, 188, 49)' },
+    { id: '101', content: '1007', x: 344, y: 559, size: 20, w: 46, h: 20, color: 'rgb(24, 156, 230)' },
+    { id: '103', content: '1002', x: 528, y: 174, size: 20, w: 46, h: 20, color: 'rgb(24, 141, 92)' },
+    { id: '106', content: '1001B', x: 949, y: 169, size: 20, w: 58, h: 20, color: 'rgb(42, 131, 169)' },
+    { id: '108', content: '1001', x: 824, y: 29, size: 20, w: 46, h: 20, color: 'rgb(17, 65, 231)' },
+    { id: '110', content: '2003X', x: 1171, y: 169, size: 20, w: 58, h: 20, color: 'rgb(54, 32, 141)' },
+    { id: '112', content: '2003', x: 1298, y: 169, size: 20, w: 46, h: 20, color: 'rgb(0, 0, 0)' },
+    { id: '114', content: '2002', x: 1494, y: 169, size: 20, w: 46, h: 20, color: 'rgb(46, 188, 69)' },
+    { id: '116', content: '2 0 0 2 B', x: 1723, y: 214, size: 75, w: 291, h: 75, color: 'rgb(204, 18, 119)' },
+    { id: '118', content: '2003B', x: 1854, y: 459, size: 75, w: 216, h: 75, color: 'rgb(204, 22, 22)' },
+    { id: '120', content: '2 1 D', x: 2233, y: 1439, size: 75, w: 171, h: 75, color: 'rgb(34, 56, 173)' },
+    { id: '122', content: '22J', x: 1754, y: 1444, size: 75, w: 126, h: 75, color: 'rgb(216, 19, 160)' },
+    { id: '123', content: '通道', x: 2304, y: 349, size: 50, w: 100, h: 50, color: 'rgb(85, 188, 49)' },
+    { id: '125', content: '通道', x: 2479, y: 349, size: 50, w: 100, h: 50, color: 'rgb(85, 188, 49)' },
+    { id: '126', content: '1001B', x: 709, y: 174, size: 20, w: 58, h: 20, color: 'rgb(42, 131, 169)' }
 ]);

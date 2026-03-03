@@ -126,7 +126,7 @@ export function ViewPort(props: Props) {
             continue;
         }
 
-        polygonAnnotationElements.push(<div key={getAnnotationElementId(annotation)} className="map-polygon-annotation" style={getPolygonAnnotationStyle(annotation)} data-area-code={annotation.type === 'area' ? annotation.areaCode! : null}></div>);
+        polygonAnnotationElements.push(<div key={getAnnotationElementId(annotation)} className="map-polygon-annotation map-element" style={getPolygonAnnotationStyle(annotation)} data-area-code={annotation.type === 'area' ? annotation.areaCode! : null}></div>);
     }
 
     const textAnnotationElements = [];
@@ -135,7 +135,7 @@ export function ViewPort(props: Props) {
             continue;
         }
         
-        textAnnotationElements.push(<p key={getAnnotationElementId(annotation)} className="map-text-annotation" style={getTextAnnotationStyle(annotation)}>{annotation.content}</p>);
+        textAnnotationElements.push(<p key={getAnnotationElementId(annotation)} className="map-text-annotation map-element" style={getTextAnnotationStyle(annotation)}>{annotation.content}</p>);
     }
 
     return (

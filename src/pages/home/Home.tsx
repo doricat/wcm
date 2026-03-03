@@ -5,27 +5,15 @@ import { ViewPort } from "./ViewPort";
 import { LoadingProgress } from "../../components/LoadingProgress";
 import { useEffect, useState } from "react";
 import { useAtomValue } from "jotai";
-import { mapLocationsAtom } from "../../store";
+import { mapSizeAtom } from "../../store";
 
 export function Home() {
     const [loading, setLoading] = useState(false);
-    const [size, setSize] = useState<number[]>([0, 0]);
-    const mapLocations = useAtomValue(mapLocationsAtom);
+    const mapSize = useAtomValue(mapSizeAtom);
 
     const loadElements = async () => {
         setLoading(true);
         await new Promise((resolve) => setTimeout(resolve, 1000));
-
-        let mapW = 0;
-        let mapH = 0;
-
-        for (const location of mapLocations) {
-            mapW = Math.max(location.x + location.w, mapW);
-            mapH = Math.max(location.y + location.h, mapH);
-        }
-
-        setSize([mapW + 50, mapH + 50]);
-
         setLoading(false);
     };
 
@@ -46,7 +34,7 @@ export function Home() {
                         <CtrlGroup />
                     </>
             }
-            <ViewPort mapW={size[0]} mapH={size[1]} />
+            <ViewPort mapW={mapSize.w} mapH={mapSize.h} />
         </div>
     );
 }
