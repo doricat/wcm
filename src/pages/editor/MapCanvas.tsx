@@ -142,7 +142,7 @@ export function MapCanvas({ ref }: { ref: React.Ref<{ saveLayout: () => void }>;
                         if (index >= 0) {
                             const polygon = polygonAnnotations[index];
                             polygonAnnotations.splice(index, 1);
-                            polygonAnnotations.push({ ...polygon, backgroundColor: (item as HTMLParagraphElement).style.backgroundColor, x: rect.x, y: rect.y, w: rect.w, h: rect.h });
+                            polygonAnnotations.push({ ...polygon, backgroundColor: (item as HTMLDivElement).style.backgroundColor, x: rect.x, y: rect.y, w: rect.w, h: rect.h });
                         }
 
                         break;
