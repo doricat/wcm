@@ -58,7 +58,7 @@ export function AddAnnotationForm({ x, y, ref }: Props) {
             const b = data.typeCode === 'area';
             setPolygonAnnotations([...polygonAnnotations, { id: generateId(), type: b ? 'area' : null, areaCode: b ? data.areaCode : null, x: x, y: y, w: 100, h: 100, backgroundColor: 'aliceblue' }]);
         } else {
-            setTextAnnotations([...textAnnotations, { id: generateId(), content: data.textCotent, x: x, y: y, size: 15, w: 100, h: 100, color: null }]);
+            setTextAnnotations([...textAnnotations, { id: generateId(), content: data.textCotent, x: x, y: y, size: 20, w: 100, h: 100, color: '#000' }]);
         }
         reset();
     };
