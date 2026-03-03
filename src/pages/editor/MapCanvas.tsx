@@ -13,6 +13,8 @@ import { Menu, Item, useContextMenu, type ItemParams, type TriggerEvent } from "
 import { getAnnotationElementId, getPolygonAnnotationStyle, getTextAnnotationStyle } from "../../types/annotation";
 import { useDialog } from "../../hooks/useDialog";
 import { AddAnnotationDialog } from "./AddAnnotationDialog";
+import { TextAnnotationPropDialog } from "./TextAnnotationPropDialog";
+import { PolygonAnnotationPropDialog } from "./PolygonAnnotationPropDialog";
 
 const menuId = 'def-menu';
 
@@ -149,9 +151,9 @@ export function MapCanvas({ ref }: { ref: React.Ref<{ saveLayout: () => void }>;
                     if (item.tagName === 'P') {
                         const index = textAnnotations.findIndex(x => x.id === id);
                         if (index >= 0) {
-                            const polygon = textAnnotations[index];
+                            const text = textAnnotations[index];
                             textAnnotations.splice(index, 1);
-                            textAnnotations.push({ ...polygon, x: rect.x, y: rect.y, w: rect.w, h: rect.h });
+                            textAnnotations.push({ ...text, size: Number.parseInt((item as HTMLParagraphElement).style.fontSize.replace('px', '')), color: (item as HTMLParagraphElement).style.color, x: rect.x, y: rect.y, w: rect.w, h: rect.h });
                         }
 
                         break;
@@ -239,6 +241,21 @@ export function MapCanvas({ ref }: { ref: React.Ref<{ saveLayout: () => void }>;
                         const arr = textAnnotations.filter(x => x.id !== annotationId);
                         setTextAnnotations(arr);
                     }
+                }
+            }
+        }
+    };
+
+    const openPropDialog = async (evt: ItemParams<TriggerEvent, undefined>) => {
+        if (evt.triggerEvent.target) {
+            const annotationId = (evt.triggerEvent.target as HTMLElement).getAttribute('data-annotation-id');
+            if (annotationId) {
+                const className = (evt.triggerEvent.target as HTMLElement).className;
+                if (className.includes('map-polygon-annotation')) {
+                    const annotation = polygonAnnotations.find(x => x.id === annotationId);
+                    await dialog.open(PolygonAnnotationPropDialog, { element: evt.triggerEvent.target as HTMLDivElement, areaCode: annotation ? annotation.areaCode : null });
+                } else if (className.includes('map-text-annotation')) {
+                    await dialog.open(TextAnnotationPropDialog, { element: evt.triggerEvent.target as HTMLParagraphElement });
                 }
             }
         }
@@ -368,6 +385,7 @@ export function MapCanvas({ ref }: { ref: React.Ref<{ saveLayout: () => void }>;
             <Menu id={menuId} animation="scale">
                 <Item id="add" disabled={contextMenuItemState.add} onClick={handleAddAnnotation}>添加标注</Item>
                 <Item id="remove" disabled={contextMenuItemState.remove} onClick={handleRemoveAnnotation}>移除标注</Item>
+                <Item id="prop" disabled={contextMenuItemState.remove} onClick={openPropDialog}>属性</Item>
             </Menu>
         </div>
     );
