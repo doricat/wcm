@@ -22,7 +22,7 @@ export const layerCtrlAtom = atom<MapElementLayerCtrl>({
 
 export const mapSizeAtom = atom<{ w: number; h: number; }>({ w: 2639, h: 1584 });
 
-export const scaleAtom = atom<number>(1);
+export const scaleAtom = atom<number>(0.56);
 
 export const areasAtom = atom<Area[]>([
     { code: '2002', name: '2002', type: '' },
@@ -91,8 +91,8 @@ export const mapLocationsAtom = atom<LocationMapElementModel[]>([
 
 export const shelvesAtom = atom<ShelfMapElementModel[]>([
     { code: '2003X', model: '1212', enabled: false, locationCode: '2003X' },
-    { code: 'S01', model: '1212', enabled: true, locationCode: null },
-    { code: 'S02', model: '1212', enabled: true, locationCode: 'A001' },
+    { code: 'S01', model: '1212', enabled: true, locationCode: 'B001' },
+    { code: 'S02', model: '1212', enabled: true, locationCode: null },
     { code: 'S03', model: '1313', enabled: true, locationCode: null }
 ]);
 
@@ -102,7 +102,10 @@ export const inventoriesAtom = atom<InventoryMapModel[]>([
     { code: 'L003', shelfCode: 'S02', supplierCode: '000000', supplierName: '默认供应商', materialCode: 'B300054260', materialName: '碳罐', batchNo: '260131', qty: 20, status: 0 }
 ]);
 
-export const transportTasksAtom = atom<TransportTaskMapModel[]>([]);
+export const transportTasksAtom = atom<TransportTaskMapModel[]>([
+    { code: 'BY001', shelfCode: 'S02', startAreaCode: '2002', endAreaCode: '21D', startLocationCode: 'A001', endLocationCode: 'D004', businessTypeCode: 'K', businessTypeName: '货架返空', status: 2, externalTaskCode: '', agvCode: null, shelfAngle: null, priority: 127, createdBy: '管理员', createdAt: new Date('2026-03-07T20:45:00+08:00'), leavedAt: new Date('2026-03-07T20:45:30+08:00'), arrivedAt: null, scheduledAt: new Date('2026-03-07T20:45:00+08:00'), message: null },
+    { code: 'BY002', shelfCode: 'S01', startAreaCode: '2002B', endAreaCode: '2002', startLocationCode: 'B001', endLocationCode: 'A001', businessTypeCode: 'B', businessTypeName: '上线补料', status: 2, externalTaskCode: '', agvCode: null, shelfAngle: null, priority: 127, createdBy: '管理员', createdAt: new Date('2026-03-07T20:46:00+08:00'), leavedAt: null, arrivedAt: null, scheduledAt: new Date('2026-03-07T20:46:00+08:00'), message: null },
+]);
 
 export const shelfModelsAtom = atom<string[]>(['1212', '1313', '1317']);
 
@@ -142,7 +145,7 @@ export const exceptionalShelfQtyAtom = atom<number>(get => {
 
 export const selectedLocationsAtom = atom<string[]>([]);
 
-export const selectedTasksAtom = atom<{ locationCode?: string; taskCode?: string; } | null>(null);
+export const selectedTasksAtom = atom<{ locationCode?: string; taskCode?: string; } | null>({ locationCode: 'A001' });
 
 export const polygonAnnotationsAtom = atom<PolygonAnnotation[]>([
     { id: '0', type: 'area', areaCode: '1007B', x: 29, y: 190, w: 433, h: 119, backgroundColor: 'aliceblue' },
