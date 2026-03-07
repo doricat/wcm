@@ -74,7 +74,7 @@ export function AddAnnotationForm({ x, y, ref }: Props) {
         <FormProvider {...methods}>
             <Box component="form">
                 <Stack spacing={1}>
-                    <PolygonTypeSelector label="标记类型" required />
+                    <PolygonTypeSelector label="标注类型" required />
                     {values.typeCode === 'area' ? <AreaAutocomplete label="库区" required /> : null}
                     {values.typeCode === 'text' ? <TextField label="文本内容" variant="outlined" size="small" slotProps={textFieldSlotProps} fullWidth required error={!!errors.textCotent} helperText={errors.textCotent?.message} {...register('textCotent')} /> : null}
                 </Stack>
@@ -84,7 +84,7 @@ export function AddAnnotationForm({ x, y, ref }: Props) {
 }
 
 const polygonTypes = [
-    { code: 'polygon', name: '几何体' },
+    { code: 'polygon', name: '矩形' },
     { code: 'area', name: '库区' },
     { code: 'text', name: '文本' }
 ];

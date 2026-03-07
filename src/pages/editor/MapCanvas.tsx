@@ -142,7 +142,7 @@ export function MapCanvas({ ref }: { ref: React.Ref<{ saveLayout: () => void }>;
                         if (index >= 0) {
                             const polygon = polygonAnnotations[index];
                             polygonAnnotations.splice(index, 1);
-                            polygonAnnotations.push({ ...polygon, backgroundColor: (item as HTMLParagraphElement).style.backgroundColor, x: rect.x, y: rect.y, w: rect.w, h: rect.h });
+                            polygonAnnotations.push({ ...polygon, backgroundColor: (item as HTMLDivElement).style.backgroundColor, x: rect.x, y: rect.y, w: rect.w, h: rect.h });
                         }
 
                         break;
@@ -232,7 +232,7 @@ export function MapCanvas({ ref }: { ref: React.Ref<{ saveLayout: () => void }>;
         if (evt.triggerEvent.target) {
             const annotationId = (evt.triggerEvent.target as HTMLElement).getAttribute('data-annotation-id');
             if (annotationId) {
-                const b = await dialog.confirm(`确定移除标记？`, { severity: 'warning' });
+                const b = await dialog.confirm(`确定移除标注？`, { severity: 'warning' });
                 if (b) {
                     const className = (evt.triggerEvent.target as HTMLElement).className;
                     if (className.includes('map-polygon-annotation')) {
