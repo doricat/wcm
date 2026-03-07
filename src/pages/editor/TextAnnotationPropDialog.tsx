@@ -26,7 +26,7 @@ export function TextAnnotationPropDialog(props: Props) {
 
     return (
         <Dialog maxWidth="xs" fullWidth open={open} PaperComponent={DraggableDialogPaperComponent} hideBackdrop disableEscapeKeyDown disableEnforceFocus slotProps={dialogSlotProps}>
-            <DialogTitle style={{ cursor: 'move' }}>文字标注：{payload.element.textContent}</DialogTitle>
+            <DialogTitle style={{ cursor: 'move' }}>文本标注：{payload.element.textContent}</DialogTitle>
             <DialogCloseButton close={onClose} />
             <DialogContent>
                 <Stack spacing={1}>

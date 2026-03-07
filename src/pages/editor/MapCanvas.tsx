@@ -232,7 +232,7 @@ export function MapCanvas({ ref }: { ref: React.Ref<{ saveLayout: () => void }>;
         if (evt.triggerEvent.target) {
             const annotationId = (evt.triggerEvent.target as HTMLElement).getAttribute('data-annotation-id');
             if (annotationId) {
-                const b = await dialog.confirm(`确定移除标记？`, { severity: 'warning' });
+                const b = await dialog.confirm(`确定移除标注？`, { severity: 'warning' });
                 if (b) {
                     const className = (evt.triggerEvent.target as HTMLElement).className;
                     if (className.includes('map-polygon-annotation')) {
